@@ -1,7 +1,7 @@
 const express = require('express');
 require('dotenv').config();
-const cors = require('cors');
 const app = express();
+const cors = require('cors');
 const helmet = require('helmet');
 const connectDB = require('./Config/db');
 
@@ -21,9 +21,11 @@ app.use(helmet({
 // Initialize Routes
 const distributorRoute = require('./Routes/distributor');
 const pocRoute = require('./Routes/poc');
+const bulkRoute = require('./Routes/bulkBreaker');
 
 app.use('/Distributor', distributorRoute);
 app.use('/Poc', pocRoute);
+app.use('/Bulkbreaker', bulkRoute);
 
 
 

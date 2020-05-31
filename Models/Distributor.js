@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const distributorSchema = new Schema({
-    ID: {type: String},
+    code: {type: String},
     name: {type: String},
-    address: {type: String},
-    pin: {type: Number},
+    password: {type: String},
     phone: {type: String},
+    location: {type: String, cordinate: []},
     latitude: {type: String},
     longitude: {type: String},
     delivery: {type: Boolean, default: false},

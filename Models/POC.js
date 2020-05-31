@@ -4,11 +4,26 @@ const Schema = mongoose.Schema;
 const pocSchema = new Schema({
     ID: {type: String},
     name: {type: String},
+    password: {type: String},
     phone: {type: String},
-    region: {type: String},
     latitude: {type: String},
     longitude: {type: String},
+    location: {type: String, coordinate: []},
+    delivery: {type: Boolean, default: false},
+    product: [
+        {
+            brand: {type: String},
+            sku: {type: String},
+            volume: {type: String},
+            price: {type: Number}
+        }
+    ],
+    payment: {
+        cash: {type: Boolean, default: false},
+        pos: {type: Boolean, default: false},
+        transfer: {type: Boolean, default: false}
+    }
 });
 
-const POC = mongoose.model('POC', pocSchema);
-module.exports = POC;
+const Poc = mongoose.model('Poc', pocSchema);
+module.exports = Poc;
