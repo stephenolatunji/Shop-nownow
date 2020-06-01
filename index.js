@@ -22,10 +22,14 @@ app.use(helmet({
 const distributorRoute = require('./Routes/distributor');
 const pocRoute = require('./Routes/poc');
 const bulkRoute = require('./Routes/bulkBreaker');
+const ownerRoute = require('./Routes/pocOwner');
+const productRoute = require('./Routes/products');
 
 app.use('/Distributor', distributorRoute);
 app.use('/Poc', pocRoute);
 app.use('/Bulkbreaker', bulkRoute);
+app.use('Owner', ownerRoute);
+app.use('/Product', productRoute);
 
 
 const port = process.env.PORT || 4000
