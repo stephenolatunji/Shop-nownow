@@ -97,20 +97,20 @@ router.route('/login')
 
 
 
-    router.route('/:_id')
-        .patch(async (req, res) => {
+router.route('/:_id')
+    .patch(async (req, res) => {
 
-            try{
+        try{
 
-                const poc = await Poc.update(
-                   { _id: req.params._id},
-                   {$set: req.body}
-                );
-                await poc.save()
-            }
-            catch(err){
-                res.status(500).send({ success: false, err})
-            }
-        })
+            const poc = await Poc.update(
+                { _id: req.params._id},
+                {$set: req.body}
+            );
+            await poc.save()
+        }
+        catch(err){
+            res.status(500).send({ success: false, err})
+        }
+    });
 
-    module.exports = router;
+module.exports = router;

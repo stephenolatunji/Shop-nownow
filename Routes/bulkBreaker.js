@@ -99,5 +99,20 @@ router.route('/login')
             }
     });
 
+router.route('/:_id')
+    .patch(async (req, res) => {
 
-    module.exports = router
+        try{
+
+            const poc = await BulkBreaker.update(
+            { _id: req.params._id},
+            {$set: req.body}
+            );
+            await poc.save()
+        }
+        catch(err){
+            res.status(500).send({ success: false, err})
+        }
+});
+
+module.exports = router
