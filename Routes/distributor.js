@@ -21,7 +21,7 @@ router.route('/')
 
     .post( 
         [
-            check('code', 'Enter your Unique Code').not().isEmpty(),
+            check('ID', 'Enter your Unique ID').not().isEmpty(),
             check('password', 'Pin must be 8 selections')
 
         ], async (req, res) => {
@@ -30,16 +30,24 @@ router.route('/')
         if (!errors.isEmpty()) {
             res.status(400).json({errors: errors.array()});
         }
-        const {code, password } = req.body;
+
+        const {ID, password } = req.body;
 
         try{
 
-            let distributor = await Distributor.findOne({ code });
+            let distributor = await Distributor.findOne({ ID });
             if(!distributor){
                 return res.status(404).send('Invalid Distributor')
             }
             const salt = await bcrypt.genSalt(10);
             distributor.password = await bcrypt.hash(password, salt);
+
+            distributor = await Distributor.findOneAndUpdate(
+                {ID: ID},
+                {$set: password}
+                
+                )
+
             await distributor.save()
         }
         catch(err){
@@ -50,7 +58,7 @@ router.route('/')
     router.route('/login')
         .post(
             [
-                check('code', 'Enter your Unique Code').not().isEmpty(),
+                check('ID', 'Enter your Unique ID').not().isEmpty(),
                 check('password', 'Pin must be 8 selection').isLength({min: 8})
     
             ],

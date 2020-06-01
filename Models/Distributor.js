@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const distributorSchema = new Schema({
-    code: {type: String},
+    ID: {type: String},
     name: {type: String},
     password: {type: String},
     phone: {type: String},

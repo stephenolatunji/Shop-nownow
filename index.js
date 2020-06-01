@@ -28,8 +28,7 @@ app.use('/Poc', pocRoute);
 app.use('/Bulkbreaker', bulkRoute);
 
 
-
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 4000
 
 // Connect Database and start Server
 connectDB().then(() =>{
