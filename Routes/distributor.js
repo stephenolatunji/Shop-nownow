@@ -108,11 +108,11 @@ router.route('/:_id')
 
         try{
 
-            const poc = await Distributor.update(
+            const distributor = await Distributor.update(
                 { _id: req.params._id},
                 {$set: req.body}
             );
-            await poc.save()
+            await distributor.save()
         }
         catch(err){
             res.status(500).send({ success: false, err})

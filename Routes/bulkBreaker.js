@@ -104,11 +104,11 @@ router.route('/:_id')
 
         try{
 
-            const poc = await BulkBreaker.update(
+            const bulkBreaker = await BulkBreaker.update(
             { _id: req.params._id},
             {$set: req.body}
             );
-            await poc.save()
+            await bulkBreaker.save()
         }
         catch(err){
             res.status(500).send({ success: false, err})
