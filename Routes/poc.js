@@ -27,20 +27,32 @@ router.route('/')
         if (!errors.isEmpty()) {
             res.status(400).json({errors: errors.array()});
         }
-        const { ID, password } = req.body;
+        const {ID, password, name, longitude, latitude, payment, delivery, product } = req.body;
 
         try{
 
             const poc = await Poc.findOne({ID});
 
-            if(!poc){
+            if(poc){
                 return res.status(404).send({success: false, message: 'POC not found, Kindly contact the CIC team'})
             }
+            
+            poc = new Poc({
+                ID,
+                name,
+                password,
+                longitude,
+                latitude,
+                payment,
+                delivery,
+                product,
+            });
 
             const salt = await bcrypt.genSalt(10);
             poc.password = await bcrypt.hash(password, salt);
 
             await poc.save()
+            res.json(poc)
         }
         catch(err){
             res.status(500).send({success: false, err})
@@ -106,7 +118,8 @@ router.route('/:_id')
                 { _id: req.params._id},
                 {$set: req.body}
             );
-            await poc.save()
+            await poc.save();
+            res.json(poc);
         }
         catch(err){
             res.status(500).send({ success: false, err})

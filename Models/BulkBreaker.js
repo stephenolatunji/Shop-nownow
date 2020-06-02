@@ -8,7 +8,6 @@ const bulkBreakerSchema = new Schema({
     phone: {type: String},
     latitude: {type: String},
     longitude: {type: String},
-    location: {type: String, coordinate: []},
     delivery: {type: Boolean, default: false},
     product: [
         {

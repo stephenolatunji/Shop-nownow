@@ -108,7 +108,8 @@ router.route('/:_id')
             { _id: req.params._id},
             {$set: req.body}
             );
-            await bulkBreaker.save()
+            await bulkBreaker.save();
+            res.json(bulkBreaker)
         }
         catch(err){
             res.status(500).send({ success: false, err})

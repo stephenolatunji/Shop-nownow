@@ -3,7 +3,7 @@ const router = express.Router();
 
 const Product = require('../Models/Poducts');
 
-router.route('/')
+router.route('/') 
     .post(async (req, res) => {
         const { brand, sku, volume, image} = req.body;
         try{

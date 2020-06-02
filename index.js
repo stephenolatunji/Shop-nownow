@@ -32,7 +32,7 @@ app.use('Owner', ownerRoute);
 app.use('/Product', productRoute);
 
 
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 5000
 
 // Connect Database and start Server
 connectDB().then(() =>{

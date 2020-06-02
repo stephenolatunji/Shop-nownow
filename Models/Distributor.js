@@ -6,7 +6,6 @@ const distributorSchema = new Schema({
     name: {type: String},
     password: {type: String},
     phone: {type: String},
-    location: {type: String, cordinate: []},
     latitude: {type: String},
     longitude: {type: String},
     delivery: {type: Boolean, default: false},
