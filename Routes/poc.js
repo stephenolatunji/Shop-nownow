@@ -8,7 +8,7 @@ const Poc = require('../Models/POC');
 router.route('/')
     .get(async (req, res) => {
         try{
-            const poc = await Poc.find();
+            const poc = await Poc.find().lean();
             res.json(poc);
         }
         catch(err){

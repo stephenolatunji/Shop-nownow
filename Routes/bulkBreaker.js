@@ -10,7 +10,7 @@ router.route('/')
     .get(async (req, res) => {
         try{
 
-            const bulkBreaker = await BulkBreaker.find();
+            const bulkBreaker = await BulkBreaker.find().lean();
             res.json(bulkBreaker);
 
         }
@@ -144,7 +144,7 @@ router.route('/:_id')
         
         try{
 
-            const bulkBreaker = await BulkBreaker.findById({_id: req.params._id});
+            const bulkBreaker = await BulkBreaker.findById({_id: req.params._id}, 'name, longitude, latitude, phone');
             res.json(bulkBreaker)
         }
         catch(err){
