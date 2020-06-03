@@ -19,43 +19,59 @@ router.route('/')
         }
     })
 
-    .post(
-        [
-            check('ID', 'Enter your Unique ID').not().isEmpty(),
-            check('password', 'Pin must be 8 selections')
 
-        ], async (req, res) =>{
+// router.route('/login')
+//     .post(
+//         [
+//             check('ID', 'Enter your Unique ID').not().isEmpty(),
+//             check('password', 'Pin must be 8 selection').isLength({min: 8})
 
-        const errors = validationResult(req);
-        if(!errors.isEmpty()){
-            return res.status(400).json({errors: errors.array()})
-        }
+//         ],
+//         async (req, res) => {
+//             const errors = validationResult(req);
+//             if (!errors.isEmpty()) {
+//                 res.status(400).json({errors: errors.array()});
+//             }
+//             const {ID, password } = req.body;
 
-        const {ID, password } = req.body;
+//             try{
 
-        try{
+//                 const bulkBreaker = await BulkBreaker.findOne({ID});
+                
+//                 if(!bulkBreaker){
+//                     return res.status(401).send({success: false, msg: 'Unauthorized User'})
+//                 }
 
-            const bulkBreaker = await BulkBreaker.find({ ID })
+//                 const isMatch = await bcrypt.compare(password, bulkBreaker.password);
 
-            if(!bulkBreaker){
-                return res.status(400).send('Invalid Credential')
-            }
+//                 if (!isMatch) {
+//                     return res.status(400).json({message: 'Invalid pin', success: false});
+//                 }
 
-            const salt = await bcrypt.genSalt(10);
-            bulkBreaker.password = await bcrypt.hash(password, salt);
-            await bulkBreaker.save()
-        }
-        catch(err){
-            res.status(500).send({success: false, err})
-        }
-    });
+//                 const payload = {
+//                     user: {
+//                         id: bulkBreaker._id
+//                     },
+//                 };
 
+//                 jwt.sign(payload, process.env.JWT_SECRET, {
+//                     expiresIn: 3600
+//                 }, (err, token) => {
+//                     if(err){
+//                         return res.status(500).send({success: false,});
+//                     }
+//                     res.json({ success: true, token, bulkBreaker });
+//                 });
+//             }
+//             catch(err){
+//                 res.status(500).send({sucess: false, err})
+//             }
+//     });
 
 router.route('/login')
     .post(
         [
             check('ID', 'Enter your Unique ID').not().isEmpty(),
-            check('password', 'Pin must be 8 selection').isLength({min: 8})
 
         ],
         async (req, res) => {
@@ -67,37 +83,45 @@ router.route('/login')
 
             try{
 
-                const bulkBreaker = await BulkBreaker.findOne({ID});
+                const bulkBreaker = await BulkBreaker.findOne({ID, password});
                 
                 if(!bulkBreaker){
                     return res.status(401).send({success: false, msg: 'Unauthorized User'})
                 }
 
-                const isMatch = await bcrypt.compare(password, bulkBreaker.password);
-
-                if (!isMatch) {
-                    return res.status(400).json({message: 'Invalid pin', success: false});
+                if(!password){
+                    return res.status(400).send('Invalid credential')
                 }
-
-                const payload = {
-                    user: {
-                        id: bulkBreaker._id
-                    },
-                };
-
-                jwt.sign(payload, process.env.JWT_SECRET, {
-                    expiresIn: 3600
-                }, (err, token) => {
-                    if(err){
-                        return res.status(500).send({success: false,});
-                    }
-                    res.json({ success: true, token, bulkBreaker });
-                });
+                    res.json({ success: true, bulkBreaker });
             }
             catch(err){
                 res.status(500).send({sucess: false, err})
             }
     });
+
+router.route('/change-password')
+    .post(async (req, res) => {
+
+        const {ID, password} = req.body;
+
+        try{
+
+            const bulkBreaker = await BulkBreaker.findOne({ID});
+            if(!bulkBreaker){
+                return res.status(404).send('Not Found')
+            }
+             const salt = await bcrypt.genSalt(10);
+             bulkBreaker.password = await bcrypt.hash(password, salt);
+
+             await bulkBreaker.save();
+
+             res.json(bulkBreaker)
+        }
+        catch(err){
+            res.status(500).send('Server error')
+        }
+    })
+
 
 router.route('/:_id')
     .patch(async (req, res) => {
@@ -114,6 +138,18 @@ router.route('/:_id')
         catch(err){
             res.status(500).send({ success: false, err})
         }
-});
+    })
+
+    .get(async (req, res) => {
+        
+        try{
+
+            const bulkBreaker = await BulkBreaker.findById({_id: req.params._id});
+            res.json(bulkBreaker)
+        }
+        catch(err){
+            res.status(500).send('Sever Error')
+        }
+    });
 
 module.exports = router

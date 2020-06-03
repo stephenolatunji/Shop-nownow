@@ -14,98 +14,62 @@ router.route('/')
         catch(err){
             res.status(500).send({success: false, err})
         }
-    })
-
-    .post( 
-        [
-        check('ID', 'Enter your Unique ID').not().isEmpty(),
-        check('password', 'Pin must be 8 selections').isLength({min: 8})
-
-        ], async (req, res) => {
-        
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            res.status(400).json({errors: errors.array()});
-        }
-        const {ID, password, name, longitude, latitude, payment, delivery, product } = req.body;
-
-        try{
-
-            const poc = await Poc.findOne({ID});
-
-            if(poc){
-                return res.status(404).send({success: false, message: 'POC not found, Kindly contact the CIC team'})
-            }
-            
-            poc = new Poc({
-                ID,
-                name,
-                password,
-                longitude,
-                latitude,
-                payment,
-                delivery,
-                product,
-            });
-
-            const salt = await bcrypt.genSalt(10);
-            poc.password = await bcrypt.hash(password, salt);
-
-            await poc.save()
-            res.json(poc)
-        }
-        catch(err){
-            res.status(500).send({success: false, err})
-        }
     });
 
+   
 router.route('/login')
     .post(
         [
             check('ID', 'Enter your Unique ID').not().isEmpty(),
-            check('password', 'Pin must be 8 selection').isLength({min: 8})
 
         ],
         async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            res.status(400).json({errors: errors.array()});
-        }
-        const {ID, password } = req.body;
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(400).json({errors: errors.array()});
+            }
+            const {ID, password } = req.body;
+
+            try{
+
+                const poc = await Poc.findOne({ID, password});
+                
+                if(!poc){
+                    return res.status(401).send({success: false, msg: 'Unauthorized User'})
+                }
+
+                if(!password){
+                    return res.status(400).send('Invalid credential')
+                }
+                    res.json({ success: true, poc });
+            }
+            catch(err){
+                res.status(500).send({sucess: false, err})
+            }
+    });
+
+    router.route('/change-password')
+    .post(async (req, res) => {
+
+        const {ID, password} = req.body;
 
         try{
 
             const poc = await Poc.findOne({ID});
-            
             if(!poc){
-                return res.status(401).send({success: false, msg: 'Unauthorized User'})
+                return res.status(404).send('Not Found')
             }
+             const salt = await bcrypt.genSalt(10);
+             poc.password = await bcrypt.hash(password, salt);
 
-            const isMatch = await bcrypt.compare(password, poc.password);
+             await poc.save();
 
-            if (!isMatch) {
-                return res.status(400).json({message: 'Invalid pin', success: false});
-            }
-
-            const payload = {
-                user: {
-                    id: poc._id
-                },
-            };
-
-            jwt.sign(payload, process.env.JWT_SECRET, {
-                expiresIn: 3600
-            }, (err, token) => {
-                if(err){
-                    return res.status(500).send({success: false,});
-                }
-                res.json({ success: true, token, poc });
-            });
+             res.json(poc)
         }
         catch(err){
-            res.status(500).send({sucess: false, err})
+            res.status(500).send('Server error')
         }
-});
+    })
 
 
 
@@ -123,6 +87,18 @@ router.route('/:_id')
         }
         catch(err){
             res.status(500).send({ success: false, err})
+        }
+    })
+    
+    .get(async (req, res) => {
+        
+        try{
+
+            const poc = await Poc.findById({_id: req.params._id});
+            res.json(poc)
+        }
+        catch(err){
+            res.status(500).send('Sever Error')
         }
     });
 
