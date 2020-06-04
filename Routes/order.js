@@ -48,6 +48,7 @@ router
         orders,
       });
     } catch (err) {
+
       res.status(500).json({ success: false, error: err });
     }
   });
@@ -55,9 +56,12 @@ router
 router.route("/:userID").get(async (req, res) => {
   try {
     const { userID } = req.params;
-    const orders = await Order.find();
-    const userOrders = orders.docs.map((order) => {
-      const userItems = order.items.filter((item) => item.userID === userID);
+    const orders = await Order.find().populate('items').lean();
+    console.log(orders)
+    const userOrders = orders.map((order) => {
+      const userItems = order.items.filter((item) => item.details.userID === userID);
+      console.log(order.items)
+      console.log(userItems);
       if (userItems.length > 0) {
         return { ...order, items: [...userItems] };
       }
@@ -67,6 +71,7 @@ router.route("/:userID").get(async (req, res) => {
       orders: userOrders,
     });
   } catch (error) {
+      console.log(error)
     return res.status(500).json({ success: false, error });
   }
 });
@@ -82,6 +87,7 @@ router.route("/:_id").patch(async (req, res) => {
       order,
     });
   } catch (err) {
+
     res.status(500).json({ success: false, error: err });
   }
 });
