@@ -1,58 +1,56 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const mongooseAutoPopulate = require("mongoose-autopopulate");
+
 const Schema = mongoose.Schema;
 
-
-orderSchema = new Schema({
+const OrderSchema = new Schema(
+  {
     pocId: {
-        type: Schema.Types.ObjectId,
-        ref: 'Poc'
+      type: Schema.Types.ObjectId,
+      ref: "Poc",
+      default: null,
+      autopopulate: true,
     },
 
-    bulkBreakerId: {
-        type: Schema.Types.ObjectId,
-        ref: 'Bulkbreaker'
+    bulkbreakerId: {
+      type: Schema.Types.ObjectId,
+      ref: "Bulkbreaker",
+      default: null,
+      autopopulate: true,
     },
     distributorId: {
-        type: Schema.Types.ObjectId,
-        ref: 'Distributor'
+      type: Schema.Types.ObjectId,
+      ref: "Distributor",
+      default: null,
+      autopopulate: true,
     },
 
     items: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Item',
-            required: true
-        }
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Item",
+        required: true,
+        autopopulate: true,
+      },
     ],
 
     totalAmount: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
 
     status: {
-        confirmed: {
-            type: Boolean,
-            default: false
-        },
-        processing: {
-            type: Boolean,
-            default: true
-        },
-        declined: {
-            type: Boolean,
-            default: false
-        },
-        cancelled: {
-            type: Boolean,
-            default: false
-        }
+      type: String,
+      default: "processing",
+      required: true,
     },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-    
-},{
-    timestamps: true
-});
+OrderSchema.plugin(mongooseAutoPopulate);
 
-const Order = mongoose.model('Order', orderSchema);
+const Order = mongoose.model("Order", OrderSchema);
 module.exports = Order;
