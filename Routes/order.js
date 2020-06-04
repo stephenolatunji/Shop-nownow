@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require('mongoose');
 
 const Order = require("../Models/Order");
 const Item = require("../Models/Items");
@@ -32,15 +33,17 @@ router
         data: order,
       });
     } catch (err) {
-      res.status(500).send({ sucess: false, error: err });
+        console.log(err);
+      res.status(500).send({ sucess: false, error: err.messsage });
     }
   })
   .get(async (req, res) => {
     try {
       const { userType, userID } = req.query;
+      console.log(req.query);
       const orders = await Order.find({
         where: {
-          [`${userType}Id`]: userID,
+          [`${userType}Id`]: mongoose.Types.ObjectId("5ed7a8a17af5370e30164125"),
         },
       });
       return res.status(200).json({

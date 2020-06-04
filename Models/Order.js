@@ -14,7 +14,7 @@ const OrderSchema = new Schema(
 
     bulkbreakerId: {
       type: Schema.Types.ObjectId,
-      ref: "Bulkbreaker",
+      ref: "BulkBreaker",
       default: null,
       autopopulate: true,
     },
