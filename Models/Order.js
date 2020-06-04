@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const mongooseAutoPopulate = require("mongoose-autopopulate");
 
-const Distributor = require('./')
+
 const Schema = mongoose.Schema;
 
 const OrderSchema = new Schema(
@@ -51,11 +51,6 @@ const OrderSchema = new Schema(
   }
 );
 
-OrderSchema.statics.findByRequesterID =  function (requesterId, callback) {
-  const query = this.find();
-
-
-}
 
 OrderSchema.plugin(mongooseAutoPopulate);
 
