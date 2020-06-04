@@ -59,7 +59,7 @@ router.route("/:userID").get(async (req, res) => {
     const userOrders = orders.docs.map((order) => {
       const userItems = order.items.filter((item) => item.userID === userID);
       if (userItems.length > 0) {
-        return { ...order, items: userItems };
+        return { ...order, items: [...userItems] };
       }
     });
     return res.status(200).json({
