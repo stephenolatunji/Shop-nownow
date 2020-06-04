@@ -15,7 +15,6 @@ router.route('/')
             res.status(500).send({success: false, err})
         }
     });
-
    
 router.route('/login')
     .post(

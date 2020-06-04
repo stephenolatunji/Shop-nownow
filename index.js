@@ -20,13 +20,13 @@ app.use(helmet({
 
 // Initialize Routes
 const distributorRoute = require('./Routes/distributor');
-const pocRoute = require('./Routes/poc');
+const pocRt = require('./Routes/poc')
 const bulkRoute = require('./Routes/bulkBreaker');
 const productRoute = require('./Routes/products');
 const orderRoute = require('./Routes/order');
 
 app.use('/Distributor', distributorRoute);
-app.use('/Poc', pocRoute);
+app.use('/Poc', pocRt);
 app.use('/Bulkbreaker', bulkRoute);
 app.use('/Product', productRoute);
 app.use('/Order', orderRoute);
