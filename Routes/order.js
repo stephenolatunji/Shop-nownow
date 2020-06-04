@@ -52,6 +52,25 @@ router
     }
   });
 
+router.route("/:userID").get(async (req, res) => {
+  try {
+    const { userID } = req.params;
+    const orders = await Order.find();
+    const userOrders = orders.docs.map((order) => {
+      const userItems = order.items.filter((item) => item.userID === userID);
+      if (userItems.length > 0) {
+        return { ...order, items: userItems };
+      }
+    });
+    return res.status(200).json({
+      success: true,
+      orders: userOrders,
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, error });
+  }
+});
+
 router.route("/:_id").patch(async (req, res) => {
   try {
     const order = await Order.updateOne(

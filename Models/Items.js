@@ -9,6 +9,7 @@ const itemSchema = new Schema(
       volume: { type: String },
       image: { type: String },
       price: { type: Number },
+      userID: { type: String },
     },
     quantity: {
       type: Number,
