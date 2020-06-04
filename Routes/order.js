@@ -6,7 +6,7 @@ const Order = require("../Models/Order");
 const Item = require("../Models/Items");
 
 router
-  .route("/")
+  .route('/')
   .post(async (req, res) => {
     const { userType, products, total, requesterID } = req.body;
 
@@ -53,42 +53,44 @@ router
     }
   });
 
-router.route("/:userID").get(async (req, res) => {
-  try {
-    const { userID } = req.params;
-    const orders = await Order.find().populate('items').lean();
-    console.log(orders)
-    const userOrders = orders.map((order) => {
-      const userItems = order.items.filter((item) => item.details.userID === userID);
-      console.log(order.items)
-      console.log(userItems);
-      if (userItems.length > 0) {
-        return { ...order, items: [...userItems] };
-      }
-    });
-    return res.status(200).json({
-      success: true,
-      orders: userOrders,
-    });
-  } catch (error) {
-      console.log(error)
-    return res.status(500).json({ success: false, error });
-  }
+router.route('/:userID')
+    .get(async (req, res) => {
+        try {
+            const { userID } = req.params;
+            const orders = await Order.find().populate('items').lean();
+            console.log(orders)
+            const userOrders = orders.map((order) => {
+            const userItems = order.items.filter((item) => item.details.userID === userID);
+            console.log(order.items)
+            console.log(userItems);
+            if (userItems.length > 0) {
+                return { ...order, items: [...userItems] };
+            }
+            });
+            return res.status(200).json({
+            success: true,
+            orders: userOrders,
+            });
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({ success: false, error });
+        }
 });
 
-router.route("/:_id").patch(async (req, res) => {
-  try {
-    const order = await Order.updateOne(
-      { _id: req.params._id },
-      { $set: { status: req.body.status } }
-    );
-    return res.status(200).json({
-      success: true,
-      order,
-    });
-  } catch (err) {
+router.route('/:_id')
+    .patch(async (req, res) => {
+        try {
+            const order = await Order.updateOne(
+            { _id: req.params._id },
+            { $set: { status: req.body.status } }
+            );
+            return res.status(200).json({
+            success: true,
+            order,
+            });
+        } catch (err) {
 
-    res.status(500).json({ success: false, error: err });
-  }
-});
+            res.status(500).json({ success: false, error: err });
+        }
+    });
 module.exports = router;
