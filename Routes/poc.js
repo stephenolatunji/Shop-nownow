@@ -78,7 +78,7 @@ router.route('/:_id')
 
         try{
 
-            const poc = await Poc.update(
+            const poc = await Poc.updateOne(
                 { _id: req.params._id},
                 {$set: req.body}
             );

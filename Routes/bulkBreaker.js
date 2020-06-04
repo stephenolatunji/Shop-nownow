@@ -128,7 +128,7 @@ router.route('/:_id')
 
         try{
 
-            const bulkBreaker = await BulkBreaker.update(
+            const bulkBreaker = await BulkBreaker.updateOne(
             { _id: req.params._id},
             {$set: req.body}
             );

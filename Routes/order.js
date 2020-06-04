@@ -85,7 +85,7 @@ router.route('/')
     });
 
     router.route('/:_id')
-        .patch((req, res) => {
+        .patch(async (req, res) => {
             try{
                 const order = await Order.updateOne(
                     {_id: req.params._id},
@@ -94,7 +94,7 @@ router.route('/')
                 if(status.confirmed == !true){
                     return status.processing = true
                 }
-                res.json(status)
+                res.json(order)
             }
             catch(err){
                 res.status(500).json(err)
