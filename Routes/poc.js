@@ -3,7 +3,7 @@ const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 
-const Poc = require('../Models/POC');
+const Poc = require('../Models/Poc');
 
 router.route('/')
     .get(async (req, res) => {
