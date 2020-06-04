@@ -82,7 +82,6 @@ router.route('/:_id')
                 { _id: req.params._id},
                 {$set: req.body}
             );
-            await poc.save();
             res.json(poc);
         }
         catch(err){

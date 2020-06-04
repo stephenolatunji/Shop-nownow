@@ -82,13 +82,12 @@ router.route('/:_id')
                 { _id: req.params._id},
                 {$set: req.body}
             );
-            await distributor.save();
             res.json(distributor);
         }
         catch(err){
             res.status(500).send({ success: false, err})
         }
-})
+    })
 
     .get(async (req, res) => {
         
