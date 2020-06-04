@@ -6,7 +6,7 @@ const Product = require('../Models/Poducts');
 const Item = require('../Models/Items')
 const Distributor = require('../Models/Distributor');
 const Bulkbreaker = require('../Models/BulkBreaker');
-const Poc = require('../Models/Poc');
+const Poc = require('../Models/Pocs');
 
 router.route('/')
     .post( async (req, res) => {
