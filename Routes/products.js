@@ -14,7 +14,8 @@ router.route('/')
                 brand,
                 sku,
                 volume,
-                image
+                image,
+                recommendedPrice
             });
            await product.save();
 
@@ -34,6 +35,21 @@ router.route('/')
         catch(err){
              
         }
-    })
+    });
+
+    router.route('/:_id')
+        .patch(async (req, res) => {
+            try{
+
+                const product = await Product.updateOne(
+                    {_id: req.params._id},
+                    {$set: {recommendedPrice: req.body.recommendedPrice}}
+                );
+                res.json(product);
+            }
+            catch(err){
+               res.status(500).send({success: false, err: 'Can not update'})
+            }
+        });
 
 module.exports = router;
