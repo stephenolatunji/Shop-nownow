@@ -17,7 +17,7 @@ router.route('/')
         catch(err){
             res.status(500).send({success: false, msg: 'Server Error'})
         }
-    })
+    });
 
 
 router.route('/login')
