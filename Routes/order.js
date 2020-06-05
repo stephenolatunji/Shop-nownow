@@ -53,16 +53,13 @@ router
     }
   });
 
-router.route('/:userID')
+router.route('/:userType/:userID')
     .get(async (req, res) => {
         try {
-            const { userID } = req.params;
-            const orders = await Order.find().populate('items').lean();
-            console.log(orders)
+            const { userID, userType } = req.params;
+            const orders = await Order.find().populate('items').populate(`${userType}Id`, '-password').lean();
             const userOrders = orders.map((order) => {
             const userItems = order.items.filter((item) => item.details.userID === userID);
-            console.log(order.items)
-            console.log(userItems);
             if (userItems.length > 0) {
                 return { ...order, items: [...userItems] };
             }
