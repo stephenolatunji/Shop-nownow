@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const mongooseAutoPopulate = require("mongoose-autopopulate");
 
-
 const Schema = mongoose.Schema;
 
 const OrderSchema = new Schema(

@@ -4,6 +4,9 @@ const mongoose = require("mongoose");
 
 const Order = require("../Models/Order");
 const Item = require("../Models/Items");
+const BulkBreaker = require('../Models/BulkBreaker');
+const Distributor = require('../Models/Distributor');
+const Poc = require('../Models/Pocs');
 
 router
   .route('/')
@@ -53,23 +56,32 @@ router
     }
   });
 
-router.route('/:userType/:userID')
+router.route('/:userID')
     .get(async (req, res) => {
         try {
-            const { userID, userType } = req.params;
-            const orders = await Order.find().populate('items').populate(`${userType}Id`, '-password').lean();
-            const userOrders = orders.map((order) => {
-            const userItems = order.items.filter((item) => item.details.userID === userID);
-            if (userItems.length > 0) {
-                return { ...order, items: [...userItems] };
+            const { userID } = req.params;
+            const orders = await Order.find().populate('items').lean();
+            const userOrders = [];
+            for await (const order of orders) {
+              let user;
+              if (order.bulkbreakerId) {
+                user = await BulkBreaker.findById(order.bulkbreakerId, 'name').lean();
+              } else if(order.distributorId) {
+                user = await Distributor.findById(order.distributorId, 'name').lean();
+              } else {
+                user = await Poc.findById(order.pocId, 'name').lean();
+              }
+              const userItems = order.items.filter((item) => item.details.userID === userID);
+              if (userItems.length > 0) {
+                  userOrders.push({ ...order, user, items: [...userItems] });
+              }
             }
-            });
             return res.status(200).json({
             success: true,
             orders: userOrders,
             });
         } catch (error) {
-            console.log(error)
+            console.log(error);
             return res.status(500).json({ success: false, error });
         }
 });
