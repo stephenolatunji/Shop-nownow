@@ -51,29 +51,6 @@ router.route('/login')
             }
     });
 
-router.route('/change-password')
-    .post(async (req, res) => {
-
-        const {ID, password} = req.body;
-
-        try{
-
-            const distributor = await Distributor.findOne({ID});
-            if(!distributor){
-                return res.status(404).send('Not Found')
-            }
-             const salt = await bcrypt.genSalt(10);
-             distributor.password = await bcrypt.hash(password, salt);
-
-             await distributor.save();
-
-             res.json(distributor)
-        }
-        catch(err){
-            res.status(500).send('Server error')
-        }
-    })
-
 router.route('/:_id')
     .patch(async (req, res) => {
         try{
@@ -99,6 +76,27 @@ router.route('/:_id')
         catch(err){
             res.status(500).send('Sever Error')
         }
+    });
+
+router.route('/changepassword/:_id')
+    .patch(async (req, res) => {
+        try{
+            const distributor = await Distributor.updateOne(
+                {_id: req.params._id},
+                {$set: {password: req.body.password}}
+            );
+            res.status(200).json({
+                success: true,
+                distributor
+            });
+        }
+        catch(err){
+            res.status(500).send({
+                sucess: false,
+                err
+            })
+        }
+
     });
 
 module.exports = router;

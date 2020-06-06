@@ -8,8 +8,7 @@ const BulkBreaker = require('../Models/BulkBreaker');
 const Distributor = require('../Models/Distributor');
 const Poc = require('../Models/Pocs');
 
-router
-  .route('/')
+router.route('/')
   .post(async (req, res) => {
     const { userType, products, total, requesterID } = req.body;
 

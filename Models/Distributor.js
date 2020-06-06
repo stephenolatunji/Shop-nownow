@@ -23,6 +23,8 @@ const distributorSchema = new Schema({
     pos: { type: Boolean, default: false },
     transfer: { type: Boolean, default: false },
   },
+
+  open: {type: Boolean, default: false}
 });
 
 const Distributor = mongoose.model("Distributor", distributorSchema);

@@ -100,4 +100,26 @@ router.route('/:_id')
         }
     });
 
+    router.route('/changepassword/:_id')
+    .patch(async (req, res) => {
+        try{
+            const poc = await Poc.updateOne(
+                {_id: req.params._id},
+                {$set: {password: req.body.password}}
+            )
+            res.status(200).json({
+                success: true,
+                poc
+            });
+        }
+        catch(err){
+            res.status(500).send({
+                sucess: false,
+                err
+            })
+        }
+
+    });
+
+
 module.exports = router;
