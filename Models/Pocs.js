@@ -23,7 +23,8 @@ const pocSchema = new Schema({
     pos: { type: Boolean, default: false },
     transfer: { type: Boolean, default: false },
   },
-  open: {type: Boolean, default: false}
+  open: {type: Boolean, default: false},
+  confirmed: { type: Boolean, default: false}
 });
 
 const Poc = mongoose.model("Poc", pocSchema);
