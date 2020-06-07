@@ -123,11 +123,11 @@ router.route('/:_id')
 
     });
 
-    router.route('/:ID')
+router.route('/User/:ID')
     .get(async (req, res) => {
         try{
 
-            const bulkBreaker = await BulkBreaker.findById({ID: req.params.ID});
+            const bulkBreaker = await BulkBreaker.find({ ID: req.params.ID});
             res.json(bulkBreaker);
         }
         catch(err){
