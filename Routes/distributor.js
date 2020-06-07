@@ -99,4 +99,19 @@ router.route('/changepassword/:_id')
 
     });
 
+router.route('/:ID')
+    .get(async (req, res) => {
+        try{
+
+            const distributor = await Distributor.findById({ID: req.params.ID});
+            res.json(distributor);
+        }
+        catch(err){
+            res.status(500).send({
+                success: false,
+                err
+            })
+        }
+});
+
 module.exports = router;

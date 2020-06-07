@@ -123,4 +123,19 @@ router.route('/:_id')
 
     });
 
+    router.route('/:ID')
+    .get(async (req, res) => {
+        try{
+
+            const bulkBreaker = await BulkBreaker.findById({ID: req.params.ID});
+            res.json(bulkBreaker);
+        }
+        catch(err){
+            res.status(500).send({
+                success: false,
+                err
+            })
+        }
+});
+
 module.exports = router;
