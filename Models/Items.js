@@ -10,6 +10,7 @@ const itemSchema = new Schema(
       image: { type: String },
       price: { type: Number },
       userID: { type: String },
+      ownerType: { type: String }
     },
     quantity: {
       type: Number,

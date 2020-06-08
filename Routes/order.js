@@ -4,35 +4,47 @@ const mongoose = require("mongoose");
 
 const Order = require("../Models/Order");
 const Item = require("../Models/Items");
-const BulkBreaker = require('../Models/BulkBreaker');
-const Distributor = require('../Models/Distributor');
-const Poc = require('../Models/Pocs');
+const BulkBreaker = require("../Models/BulkBreaker");
+const Distributor = require("../Models/Distributor");
+const Poc = require("../Models/Pocs");
 
-router.route('/')
+router
+  .route("/")
   .post(async (req, res) => {
-    const { userType, products, total, requesterID } = req.body;
+    const { userType, products, requesterID } = req.body;
 
     try {
-      const itemIDs = [];
-      for await (let product of products) {
-        const item = new Item({
-          details: { ...product },
-          quantity: product.quantity,
+      const productOwners = products.map((product) => product.userID);
+      for await (let productOwner of productOwners) {
+        const productOwnersProds = products.filter(
+          (product) => product.userID === productOwner
+        );
+        const itemPrices = [];
+        const itemIDs = [];
+        for await (let product of productOwnersProds) {
+          const item = new Item({
+            details: { ...product },
+            quantity: product.quantity,
+          });
+          await item.save();
+          itemIDs.push(item._id);
+          itemPrices.push({ quantity: item.quantity, price: item.details.price });
+        }
+
+        const order = new Order({
+          [`${userType}Id`]: requesterID,
+          items: itemIDs,
+          ownerId: productOwner,
+          ownerType: productOwnersProds[0].ownerType,
+          totalAmount: itemPrices.reduce(
+            (acc, item) => acc + (item.quantity * item.price),
+            0
+          ),
         });
-        await item.save();
-        itemIDs.push(item._id);
+        await order.save();
       }
-
-      const order = new Order({
-        [`${userType}Id`]: requesterID,
-        items: itemIDs,
-        totalAmount: total,
-      });
-      await order.save();
-
       return res.status(201).json({
         success: true,
-        data: order,
       });
     } catch (err) {
       console.log(err);
@@ -41,64 +53,75 @@ router.route('/')
   })
   .get(async (req, res) => {
     try {
-      const { userType, userID } = req.query;
+      const { userType, ID } = req.query;
       const orders = await Order.find({
-        [`${userType}Id`]: mongoose.Types.ObjectId(userID),
-      });
+        [`${userType}Id`]: mongoose.Types.ObjectId(ID),
+      }).populate('items').lean();
+      const completeOrders = [];
+      for await (const order of orders) {
+        let user = {};
+        if (order.ownerType === "bulkbreaker") {
+          user = await BulkBreaker.findOne({ ID: order.ownerId }).select('-password').lean();
+        } else if (order.ownerType === "poc") {
+          user = await Poc.findOne({ ID: order.ownerId }).select('-password').lean();
+        } else if (order.ownerType === "distributor") {
+          user = await Distributor.findOne({ ID: order.ownerId }).select('-password').lean();
+        }
+        completeOrders.push({ ...order, owner: { ...user } });
+      }
       return res.status(200).json({
         success: true,
-        orders,
+        orders: completeOrders,
       });
     } catch (err) {
-
       res.status(500).json({ success: false, error: err });
     }
   });
 
-router.route('/:userID')
-    .get(async (req, res) => {
-        try {
-            const { userID } = req.params;
-            const orders = await Order.find().populate('items').lean();
-            const userOrders = [];
-            for await (const order of orders) {
-              let user;
-              if (order.bulkbreakerId) {
-                user = await BulkBreaker.findById(order.bulkbreakerId, 'name latitude longitude').lean();
-              } else if(order.distributorId) {
-                user = await Distributor.findById(order.distributorId, 'name latitude longitude').lean();
-              } else {
-                user = await Poc.findById(order.pocId, 'name latitude longitude').lean();
-              }
-              const userItems = order.items.filter((item) => item.details.userID === userID);
-              if (userItems.length > 0) {
-                  userOrders.push({ ...order, user, items: [...userItems] });
-              }
-            }
-            return res.status(200).json({
-            success: true,
-            orders: userOrders,
-            });
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ success: false, error });
-        }
+router.route("/:userID").get(async (req, res) => {
+  try {
+    const { userID } = req.params;
+    const orders = await Order.find({ ownerId: userID }).populate("items").lean();
+    const userOrders = [];
+    for await (const order of orders) {
+      let user;
+      if (order.bulkbreakerId) {
+        user = await BulkBreaker.findById(
+          order.bulkbreakerId,
+          "name latitude longitude"
+        ).lean();
+      } else if (order.distributorId) {
+        user = await Distributor.findById(
+          order.distributorId,
+          "name latitude longitude"
+        ).lean();
+      } else {
+        user = await Poc.findById(order.pocId, "name latitude longitude").lean();
+      }
+      userOrders.push({ ...order, user });
+    }
+    return res.status(200).json({
+      success: true,
+      orders: userOrders,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, error });
+  }
 });
 
-router.route('/:_id')
-    .patch(async (req, res) => {
-        try {
-            const order = await Order.updateOne(
-            { _id: req.params._id },
-            { $set: { status: req.body.status } }
-            );
-            return res.status(200).json({
-            success: true,
-            order,
-            });
-        } catch (err) {
-
-            res.status(500).json({ success: false, error: err });
-        }
+router.route("/:_id").patch(async (req, res) => {
+  try {
+    const order = await Order.updateOne(
+      { _id: req.params._id },
+      { $set: { status: req.body.status } }
+    );
+    return res.status(200).json({
+      success: true,
+      order,
     });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err });
+  }
+});
 module.exports = router;

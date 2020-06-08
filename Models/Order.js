@@ -24,7 +24,8 @@ const OrderSchema = new Schema(
       default: null,
       autopopulate: true,
     },
-
+    ownerType: { type: String },
+    ownerId: { type: String},
     items: [
       {
         type: Schema.Types.ObjectId,
@@ -49,7 +50,6 @@ const OrderSchema = new Schema(
     timestamps: true,
   }
 );
-
 
 OrderSchema.plugin(mongooseAutoPopulate);
 

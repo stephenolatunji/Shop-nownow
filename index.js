@@ -3,6 +3,7 @@ require('dotenv').config();
 const app = express();
 const cors = require('cors');
 const helmet = require('helmet');
+const compression = require('compression');
 const connectDB = require('./Config/db');
 
 // Require Middleware
@@ -17,6 +18,7 @@ app.use(helmet({
     },
     referrerPolicy: {policy: 'same-origin'}
 }));
+app.use(compression({ level: 9 }));
 
 // Initialize Routes
 const distributorRoute = require('./Routes/distributor');
