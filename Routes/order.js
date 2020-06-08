@@ -64,11 +64,11 @@ router.route('/:userID')
             for await (const order of orders) {
               let user;
               if (order.bulkbreakerId) {
-                user = await BulkBreaker.findById(order.bulkbreakerId, 'name').lean();
+                user = await BulkBreaker.findById(order.bulkbreakerId, 'name latitude longitude').lean();
               } else if(order.distributorId) {
-                user = await Distributor.findById(order.distributorId, 'name').lean();
+                user = await Distributor.findById(order.distributorId, 'name latitude longitude').lean();
               } else {
-                user = await Poc.findById(order.pocId, 'name').lean();
+                user = await Poc.findById(order.pocId, 'name latitude longitude').lean();
               }
               const userItems = order.items.filter((item) => item.details.userID === userID);
               if (userItems.length > 0) {
