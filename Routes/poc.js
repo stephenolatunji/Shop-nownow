@@ -47,31 +47,6 @@ router.route('/login')
             }
     });
 
-    router.route('/change-password')
-    .post(async (req, res) => {
-
-        const {ID, password} = req.body;
-
-        try{
-
-            const poc = await Poc.findOne({ID});
-            if(!poc){
-                return res.status(404).send('Not Found')
-            }
-             const salt = await bcrypt.genSalt(10);
-             poc.password = await bcrypt.hash(password, salt);
-
-             await poc.save();
-
-             res.json(poc)
-        }
-        catch(err){
-            res.status(500).send('Server error')
-        }
-    })
-
-
-
 router.route('/:_id')
     .patch(async (req, res) => {
 
@@ -107,6 +82,9 @@ router.route('/:_id')
                 {_id: req.params._id},
                 {$set: {password: req.body.password}}
             )
+            const salt = await bcrypt.genSalt(10);
+            distributor.password = await bcrypt.hash(password, salt);
+
             res.status(200).json({
                 success: true,
                 poc
