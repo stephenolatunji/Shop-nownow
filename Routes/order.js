@@ -31,7 +31,24 @@ router
           itemPrices.push({ quantity: item.quantity, price: item.details.price });
         }
 
-        const order = new Order({
+        let order;
+
+        if (item.quantity >= 80){
+
+         order = new Order({
+            [`${userType}Id`]: requesterID,
+            items: itemIDs,
+            ownerId: productOwner,
+            ownerType: productOwnersProds[0].ownerType,
+            totalAmount: itemPrices.reduce(
+              (acc, item) => acc + (item.quantity * (item.price * 0.981)),
+              0
+            ),
+  
+          });
+
+        }
+       order = new Order({
           [`${userType}Id`]: requesterID,
           items: itemIDs,
           ownerId: productOwner,
@@ -40,7 +57,9 @@ router
             (acc, item) => acc + (item.quantity * item.price),
             0
           ),
+
         });
+
         await order.save();
       }
       return res.status(201).json({
