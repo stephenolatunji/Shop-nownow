@@ -47,11 +47,9 @@ const OrderSchema = new Schema(
     },
 
     paymentMode: {
-      cash: {type: Boolean, default: false},
-      transfer: {type: Boolean, default: false},
-      card: {type: Boolean, default: false}
-    }
-  },
+      type: String
+  }
+},
   {
     timestamps: true,
   }
