@@ -45,6 +45,12 @@ const OrderSchema = new Schema(
       default: "new",
       required: true,
     },
+
+    paymentMode: {
+      cash: {type: Boolean, default: false},
+      transfer: {type: Boolean, default: false},
+      card: {type: Boolean, default: false}
+    }
   },
   {
     timestamps: true,
