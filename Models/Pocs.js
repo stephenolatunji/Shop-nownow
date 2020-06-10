@@ -24,7 +24,11 @@ const pocSchema = new Schema({
     transfer: { type: Boolean, default: false },
   },
   open: {type: Boolean, default: false},
-  confirmed: { type: Boolean, default: false}
+  confirmed: { type: Boolean, default: false},
+  contact:{
+    phone:{type: Boolean, default: false},
+    whatsapp: {type: Boolean, default: false}
+  }
 });
 
 const Poc = mongoose.model("Poc", pocSchema);

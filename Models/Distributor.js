@@ -25,7 +25,11 @@ const distributorSchema = new Schema({
   },
 
   open: {type: Boolean, default: false},
-  confirmed: { type: Boolean, default: false}
+  confirmed: { type: Boolean, default: false},
+  contact:{
+    phone:{type: Boolean, default: false},
+    whatsapp: {type: Boolean, default: false}
+  }
 });
 
 const Distributor = mongoose.model("Distributor", distributorSchema);
