@@ -6,6 +6,8 @@ const bulkBreakerSchema = new Schema({
   name: { type: String },
   password: { type: String },
   phone: { type: String },
+  viaphone: {type: Boolean, default: false},
+  viawhatsapp: {type: Boolean, default: false},
   latitude: { type: String },
   longitude: { type: String },
   delivery: { type: Boolean, default: false },
@@ -25,10 +27,7 @@ const bulkBreakerSchema = new Schema({
   },
   open: {type: Boolean, default: false},
   confirmed: { type: Boolean, default: false},
-  contact:{
-    phone:{type: Boolean, default: false},
-    whatsapp: {type: Boolean, default: false}
-  }
+
 });
 
 const BulkBreaker = mongoose.model("BulkBreaker", bulkBreakerSchema);
