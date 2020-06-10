@@ -6,6 +6,7 @@ const distributorSchema = new Schema({
   name: { type: String },
   password: { type: String },
   phone: { type: String },
+  whatsapp: {type: String},
   viaphone: {type: Boolean, default: false},
   viawhatsapp: {type: Boolean, default: false},
   latitude: { type: String },
