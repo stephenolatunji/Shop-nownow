@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
+require('dotenv').config();
 const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 
 const BulkBreaker = require('../Models/BulkBreaker');
@@ -40,10 +42,36 @@ router.route('/login')
                     return res.status(401).send({success: false, msg: 'Unauthorized User'})
                 }
 
-                if(!password){
-                    return res.status(400).send('Invalid credential')
-                }
-                    res.json({ success: true, bulkBreaker });
+                // const isMatch = await bcrypt.compare(password, bulkBreaker.password)
+
+                // if(!isMatch){
+                //     return res.status(400).send({
+                //         success: false,
+                //         message: 'Invalid credential'
+                //     })
+                // }
+
+                // const payload = {
+                //     user: {
+                //         id: bulkBreaker._id
+                //     }
+                // };
+
+                // jwt.sign(payload, process.env.JWT_SECRET, {
+                //     expiresIn: 3600,
+                // }, async (err, token) => {
+                //     if(err){
+                //         return res.status(500).send({
+                //             success: false,
+                //             message: 'Error Validating'
+                //         })
+                //     }
+                    res.json({
+                        success: true,
+                        bulkBreaker,
+                    //     token
+                    // });
+                });
             }
             catch(err){
                 res.status(500).send({sucess: false, err})

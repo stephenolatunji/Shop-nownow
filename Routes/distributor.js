@@ -41,9 +41,14 @@ router.route('/login')
                     return res.status(401).send({success: false, msg: 'Unauthorized User'})
                 }
 
-                if(!password){
-                    return res.status(400).send('Invalid credential')
-                }
+                // const isMatch = await bcrypt.compare(password, distributor.password);
+
+                // if(!isMatch){
+                //     return res.status(400).send({
+                //     success: false,
+                //     message: 'Invalid credential'
+                // })
+                // }
                     res.json({ success: true, distributor });
             }
             catch(err){

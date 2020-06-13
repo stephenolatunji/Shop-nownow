@@ -10,13 +10,15 @@ const itemSchema = new Schema(
       image: { type: String },
       price: { type: Number },
       userID: { type: String },
-      ownerType: { type: String }
+      ownerType: { type: String },
+      paymentMode: {type: String}
     },
     quantity: {
       type: Number,
       required: true,
       min: [1, "Quantity not less than 1"],
-    },
+    }
+
   },
   {
     timestamps: true,

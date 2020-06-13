@@ -32,7 +32,7 @@ const OrderSchema = new Schema(
         ref: "Item",
         required: true,
         autopopulate: true,
-      },
+      }
     ],
 
     totalAmount: {
@@ -44,9 +44,7 @@ const OrderSchema = new Schema(
       type: String,
       default: "new",
       required: true,
-    },
-
-    paymentMode: {type: String}
+    }
 },
   {
     timestamps: true,
