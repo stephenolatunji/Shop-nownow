@@ -50,29 +50,6 @@ router.route('/login')
             }
     });
 
-router.route('/change-password')
-    .post(async (req, res) => {
-
-        const {ID, password} = req.body;
-
-        try{
-
-            const bulkBreaker = await BulkBreaker.findOne({ID});
-            if(!bulkBreaker){
-                return res.status(404).send('Not Found')
-            }
-             const salt = await bcrypt.genSalt(10);
-             bulkBreaker.password = await bcrypt.hash(password, salt);
-
-             await bulkBreaker.save();
-
-             res.json(bulkBreaker)
-        }
-        catch(err){
-            res.status(500).send('Server error')
-        }
-    })
-
 
 router.route('/:_id')
     .patch(async (req, res) => {
@@ -108,7 +85,11 @@ router.route('/:_id')
             const bulkbreaker = await BulkBreaker.updateOne(
                 {_id: req.params._id},
                 {$set: {password: req.body.password}}
-            ); 
+            );
+
+            // const salt = await bcrypt.genSalt(10);
+            // bulkBreaker.password = await bcrypt.hash(password, salt);
+
             res.status(200).json({
                 success: true,
                 bulkbreaker

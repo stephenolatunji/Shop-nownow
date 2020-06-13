@@ -44,7 +44,9 @@ const OrderSchema = new Schema(
       type: String,
       default: "new",
       required: true,
-    }
+    },
+
+    paymentMode: {type: String}
 },
   {
     timestamps: true,

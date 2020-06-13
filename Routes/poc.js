@@ -2,8 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-const Poc = require('../Models/Pocs')
+const Poc = require('../Models/Pocs');
+
 
 router.route('/')
     .get(async (req, res) => {
@@ -38,10 +40,36 @@ router.route('/login')
                     return res.status(401).send({success: false, msg: 'Unauthorized User'})
                 }
 
-                if(!password){
-                    return res.status(400).send('Invalid credential')
-                }
-                    res.json({ success: true, poc });
+                // const isMatch = await bcrypt.compare(password, poc.password);
+
+                // if(!isMatch){
+                //     return res.status(400).send({
+                //     message: 'Invalid credential',
+                //     success: false
+                //     })
+                // }
+
+                // const payload = {
+                //     user: {
+                //         id: poc._id
+                //     }
+                // };
+
+                // jwt.sign(payload, process.env.JWT_SECRET, {
+                //     expiresIn: 3600
+                // }, async (err, token) => {
+                //     if(err){
+                //         return res.status(500).send({
+                //             success: false,
+                //             message: 'Invalid creditial'
+                //         })
+                //     }
+                    res.json({
+                        success: true,
+                        poc
+                        // token
+                    });
+                // });
             }
             catch(err){
                 res.status(500).send({sucess: false, err})
