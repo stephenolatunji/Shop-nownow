@@ -32,19 +32,34 @@ router
         }
 
         const totalItemsQuantity = itemPrices.reduce((acc, item) => acc + item.quantity, 0);
-        const multiplyBy = totalItemsQuantity >= 80 ? 0.981 : 1;
-        
-       const order = new Order({
-          [`${userType}Id`]: requesterID,
-          items: itemIDs,
-          ownerId: productOwner,
-          ownerType: productOwnersProds[0].ownerType,
-          totalAmount: itemPrices.reduce(
-            (acc, item) => acc + (item.quantity * (item.price * multiplyBy)),
-            0
-          ),
-        });
+        // const multiplyBy = totalItemsQuantity >= 80 ? 0.981 : 1;
 
+        let order;
+
+        if(totalItemsQuantity >= 80){
+          order = new Order({
+            [`${userType}Id`]: requesterID,
+            items: itemIDs,
+            ownerId: productOwner,
+            ownerType: productOwnersProds[0].ownerType,
+            totalAmount: itemPrices.reduce(
+              (acc, item) => acc + (item.quantity * (item.price * 0.981)),
+              0
+            ),
+          });
+        }
+        else {
+          order = new Order({
+            [`${userType}Id`]: requesterID,
+            items: itemIDs,
+            ownerId: productOwner,
+            ownerType: productOwnersProds[0].ownerType,
+            totalAmount: itemPrices.reduce(
+              (acc, item) => acc + (item.quantity * item.price),
+              0
+            ),
+          });
+        }
         await order.save();
       }
       return res.status(201).json({
@@ -55,6 +70,7 @@ router
       res.status(500).send({ sucess: false, error: err.messsage });
     }
   })
+
   .get(async (req, res) => {
     try {
       const { userType, ID } = req.query;
