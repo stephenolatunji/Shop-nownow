@@ -14,7 +14,11 @@ router
     const { userType, products, requesterID } = req.body;
 
     try {
-      const productOwners = products.map((product) => product.userID);
+      const productOwners = new Set(products.map((product) => product.userID))
+      const totalItemsQuantity = products.reduce(
+        (acc, product) => acc + product.quantity,
+        0
+      );
       for await (let productOwner of productOwners) {
         const productOwnersProds = products.filter(
           (product) => product.userID === productOwner
@@ -30,32 +34,29 @@ router
           itemIDs.push(item._id);
           itemPrices.push({ quantity: item.quantity, price: item.details.price });
         }
-
-        const totalItemsQuantity = itemPrices.reduce((acc, item) => acc + item.quantity, 0);
         // const multiplyBy = totalItemsQuantity >= 80 ? 0.981 : 1;
 
         let order;
 
-        if(totalItemsQuantity < 80){
+        if (totalItemsQuantity >= 80) {
           order = new Order({
             [`${userType}Id`]: requesterID,
             items: itemIDs,
             ownerId: productOwner,
             ownerType: productOwnersProds[0].ownerType,
             totalAmount: itemPrices.reduce(
-              (acc, item) => acc + (item.quantity * (item.price * 1.024)),
+              (acc, item) => acc + item.quantity * (item.price * 0.981),
               0
             ),
           });
-        }
-        else {
+        } else {
           order = new Order({
             [`${userType}Id`]: requesterID,
             items: itemIDs,
             ownerId: productOwner,
             ownerType: productOwnersProds[0].ownerType,
             totalAmount: itemPrices.reduce(
-              (acc, item) => acc + (item.quantity * item.price),
+              (acc, item) => acc + item.quantity * item.price,
               0
             ),
           });
@@ -76,16 +77,22 @@ router
       const { userType, ID } = req.query;
       const orders = await Order.find({
         [`${userType}Id`]: mongoose.Types.ObjectId(ID),
-      }).populate('items').lean();
+      })
+        .populate("items")
+        .lean();
       const completeOrders = [];
       for await (const order of orders) {
         let user = {};
         if (order.ownerType === "bulkbreaker") {
-          user = await BulkBreaker.findOne({ ID: order.ownerId }).select('-password').lean();
+          user = await BulkBreaker.findOne({ ID: order.ownerId })
+            .select("-password")
+            .lean();
         } else if (order.ownerType === "poc") {
-          user = await Poc.findOne({ ID: order.ownerId }).select('-password').lean();
+          user = await Poc.findOne({ ID: order.ownerId }).select("-password").lean();
         } else if (order.ownerType === "distributor") {
-          user = await Distributor.findOne({ ID: order.ownerId }).select('-password').lean();
+          user = await Distributor.findOne({ ID: order.ownerId })
+            .select("-password")
+            .lean();
         }
         completeOrders.push({ ...order, owner: { ...user } });
       }
