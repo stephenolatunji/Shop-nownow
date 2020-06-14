@@ -38,14 +38,14 @@ router
 
         let order;
 
-        if (totalItemsQuantity >= 80) {
+        if (totalItemsQuantity < 80) {
           order = new Order({
             [`${userType}Id`]: requesterID,
             items: itemIDs,
             ownerId: productOwner,
             ownerType: productOwnersProds[0].ownerType,
             totalAmount: itemPrices.reduce(
-              (acc, item) => acc + item.quantity * (item.price * 0.981),
+              (acc, item) => acc + item.quantity * (item.price * 1.0241),
               0
             ),
           });
