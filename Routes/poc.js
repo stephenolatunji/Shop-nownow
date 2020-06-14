@@ -11,7 +11,7 @@ const Poc = require('../Models/Pocs');
 router.route('/')
     .get(async (req, res) => {
         try{
-            const poc = await Poc.find().lean();
+            const poc = await Poc.find().select('name, phone, whatsapp, longitude, latitude').lean();
             res.json(poc);
         }
         catch(err){
@@ -97,7 +97,7 @@ router.route('/:_id')
         
         try{
 
-            const poc = await Poc.findById({_id: req.params._id});
+            const poc = await Poc.findById({_id: req.params._id}, 'name longitude latitude phone');
             res.json(poc)
         }
         catch(err){
@@ -133,7 +133,7 @@ router.route('/User/:ID')
     .get(async (req, res) => {
         try{
 
-            const poc = await Poc.find({ ID: req.params.ID});
+            const poc = await Poc.find({ ID: req.params.ID}, 'name longitude latitude phone');
             res.json(poc);
         }
         catch(err){

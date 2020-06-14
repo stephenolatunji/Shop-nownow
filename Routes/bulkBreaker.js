@@ -12,7 +12,7 @@ router.route('/')
     .get(async (req, res) => {
         try{
 
-            const bulkBreaker = await BulkBreaker.find().lean();
+            const bulkBreaker = await BulkBreaker.find().select('name, phone, whatsapp, longitude, latitude').lean();
             res.json(bulkBreaker);
 
         }
@@ -99,7 +99,7 @@ router.route('/:_id')
         
         try{
 
-            const bulkBreaker = await BulkBreaker.findById({_id: req.params._id}, 'name, longitude, latitude, phone');
+            const bulkBreaker = await BulkBreaker.findById({_id: req.params._id}, 'name longitude latitude phone');
             res.json(bulkBreaker)
         }
         catch(err){
@@ -136,7 +136,7 @@ router.route('/User/:ID')
     .get(async (req, res) => {
         try{
 
-            const bulkBreaker = await BulkBreaker.find({ ID: req.params.ID});
+            const bulkBreaker = await BulkBreaker.find({ ID: req.params.ID}, 'name longitude latitude phone');
             res.json(bulkBreaker);
         }
         catch(err){

@@ -11,7 +11,7 @@ const Distributor = require('../Models/Distributor');
 router.route('/')
     .get(async (req, res) => {
         try{
-            const distributor = await Distributor.find().lean()
+            const distributor = await Distributor.find().select('name, phone, whatsapp, longitude, latitude').lean()
             res.json(distributor)
         }
         catch(err){
@@ -75,7 +75,7 @@ router.route('/:_id')
         
         try{
 
-            const distributor = await Distributor.findById({_id: req.params._id});
+            const distributor = await Distributor.findById({_id: req.params._id}, 'name longitude latitude phone');
             res.json(distributor)
         }
         catch(err){
@@ -112,7 +112,7 @@ router.route('/User/:ID')
     .get(async (req, res) => {
         try{
 
-            const distributor = await Distributor.find({ ID: req.params.ID});
+            const distributor = await Distributor.find({ ID: req.params.ID}, 'name phone longitude latitude');
             res.json(distributor);
         }
         catch(err){
