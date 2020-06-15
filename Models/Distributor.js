@@ -27,7 +27,7 @@ const distributorSchema = new Schema({
     transfer: { type: Boolean, default: false },
   },
 
-  open: {type: Boolean, default: false},
+  activated: {type: Boolean, default: false},
   confirmed: { type: Boolean, default: false},
 
 });
