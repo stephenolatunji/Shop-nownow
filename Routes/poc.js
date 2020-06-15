@@ -97,7 +97,7 @@ router.route('/:_id')
         
         try{
 
-            const poc = await Poc.findById({_id: req.params._id}, 'name longitude latitude phone');
+            const poc = await Poc.findById({_id: req.params._id});
             res.json(poc)
         }
         catch(err){
@@ -133,7 +133,7 @@ router.route('/User/:ID')
     .get(async (req, res) => {
         try{
 
-            const poc = await Poc.find({ ID: req.params.ID}, 'name longitude latitude phone');
+            const poc = await Poc.find({ ID: req.params.ID});
             res.json(poc);
         }
         catch(err){

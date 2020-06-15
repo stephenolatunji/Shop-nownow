@@ -75,7 +75,7 @@ router.route('/:_id')
         
         try{
 
-            const distributor = await Distributor.findById({_id: req.params._id}, 'name longitude latitude phone');
+            const distributor = await Distributor.findById({_id: req.params._id});
             res.json(distributor)
         }
         catch(err){
@@ -112,7 +112,7 @@ router.route('/User/:ID')
     .get(async (req, res) => {
         try{
 
-            const distributor = await Distributor.find({ ID: req.params.ID}, 'name phone longitude latitude');
+            const distributor = await Distributor.find({ ID: req.params.ID});
             res.json(distributor);
         }
         catch(err){
