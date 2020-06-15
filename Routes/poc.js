@@ -11,7 +11,7 @@ const Poc = require('../Models/Pocs');
 router.route('/')
     .get(async (req, res) => {
         try{
-            const poc = await Poc.find().select('name, phone, whatsapp, longitude, latitude').lean();
+            const poc = await Poc.find().select('name phone whatsapp longitude latitude').lean();
             res.json(poc);
         }
         catch(err){

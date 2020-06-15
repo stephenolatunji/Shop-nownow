@@ -12,7 +12,7 @@ router.route('/')
     .get(async (req, res) => {
         try{
 
-            const bulkBreaker = await BulkBreaker.find().select('name, phone, whatsapp, longitude, latitude').lean();
+            const bulkBreaker = await BulkBreaker.find().select('name phone whatsapp longitude latitude').lean();
             res.json(bulkBreaker);
 
         }
