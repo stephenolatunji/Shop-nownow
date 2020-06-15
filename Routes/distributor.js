@@ -11,7 +11,7 @@ const Distributor = require('../Models/Distributor');
 router.route('/')
     .get(async (req, res) => {
         try{
-            const distributor = await Distributor.find().select('name phone whatsapp longitude latitude').lean()
+            const distributor = await Distributor.find().lean()
             res.json(distributor)
         }
         catch(err){
