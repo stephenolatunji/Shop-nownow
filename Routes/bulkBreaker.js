@@ -69,7 +69,7 @@ router.route('/login')
                     res.json({
                         success: true,
                         bulkBreaker,
-                    //     token
+                    //  token
                     // });
                 });
             }
@@ -108,7 +108,17 @@ router.route('/:_id')
     });
 
     router.route('/changepassword/:_id')
-    .patch(async (req, res) => {
+    .patch(
+        // [
+        //     check('password', 'Please enter a password at least 8 character and contain At least one uppercase.At least one lower case.At least one special character.')
+        //     .isLength({min: 8})
+        //     .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, "i")
+        // ],
+            async (req, res) => {
+                // const errors = validationResult(req);
+                // if (!errors.isEmpty()) {
+                //     res.status(400).json({errors: errors.array()});
+                // }
         try{
             const bulkbreaker = await BulkBreaker.updateOne(
                 {_id: req.params._id},

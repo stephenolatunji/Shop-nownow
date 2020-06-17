@@ -28,6 +28,7 @@ const bulkBreakerSchema = new Schema({
   },
   activated: {type: Boolean, default: false},
   confirmed: { type: Boolean, default: false},
+  ratings: {type: Number}
 
 });
 

@@ -11,7 +11,7 @@ const Distributor = require('../Models/Distributor');
 router.route('/')
     .get(async (req, res) => {
         try{
-            const distributor = await Distributor.find().lean()
+            const distributor = await Distributor.find().select('-password').lean()
             res.json(distributor)
         }
         catch(err){
@@ -24,6 +24,7 @@ router.route('/login')
     .post(
         [
             check('ID', 'Enter your Unique ID').not().isEmpty(),
+            check('password', 'invalid password').exists()
 
         ],
         async (req, res) => {
@@ -49,7 +50,28 @@ router.route('/login')
                 //     message: 'Invalid credential'
                 // })
                 // }
-                    res.json({ success: true, distributor });
+                  
+                // const payload = {
+                //     user: {
+                //         id: poc._id
+                //     }
+                // };
+
+                // jwt.sign(payload, process.env.JWT_SECRET, {
+                //     expiresIn: 3600
+                // }, async (err, token) => {
+                //     if(err){
+                //         return res.status(500).send({
+                //             success: false,
+                //             message: 'Invalid creditial'
+                //         })
+                //     }
+                res.json({
+                    success: true,
+                    distributor
+                    // token
+                });
+            // });
             }
             catch(err){
                 res.status(500).send({sucess: false, err})
@@ -75,7 +97,7 @@ router.route('/:_id')
         
         try{
 
-            const distributor = await Distributor.findById({_id: req.params._id});
+            const distributor = await Distributor.findById({_id: req.params._id}, '-password');
             res.json(distributor)
         }
         catch(err){
@@ -84,7 +106,18 @@ router.route('/:_id')
     });
 
 router.route('/changepassword/:_id')
-    .patch(async (req, res) => {
+    .patch(
+    //     [
+    //     check('password', 'Please enter a password at least 8 character and contain At least one uppercase.At least one lower case.At least one special character.')
+    //     .isLength({min: 8})
+    //     .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, "i")
+    // ],
+        async (req, res) => {
+            // const errors = validationResult(req);
+            // if (!errors.isEmpty()) {
+            //     res.status(400).json({errors: errors.array()});
+            // }
+
         try{
             const distributor = await Distributor.updateOne(
                 {_id: req.params._id},
@@ -112,7 +145,7 @@ router.route('/User/:ID')
     .get(async (req, res) => {
         try{
 
-            const distributor = await Distributor.find({ ID: req.params.ID});
+            const distributor = await Distributor.find({ ID: req.params.ID}, '-password');
             res.json(distributor);
         }
         catch(err){
