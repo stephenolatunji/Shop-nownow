@@ -115,15 +115,15 @@ router.route("/:userID").get(async (req, res) => {
       if (order.bulkbreakerId) {
         user = await BulkBreaker.findById(
           order.bulkbreakerId,
-          "name latitude longitude"
+          "-password"
         ).lean();
       } else if (order.distributorId) {
         user = await Distributor.findById(
           order.distributorId,
-          "name latitude longitude"
+          "-password"
         ).lean();
       } else {
-        user = await Poc.findById(order.pocId, "name latitude longitude").lean();
+        user = await Poc.findById(order.pocId, "-password").lean();
       }
       userOrders.push({ ...order, user });
     }
