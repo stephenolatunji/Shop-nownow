@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongooseAutoPopulate = require("mongoose-autopopulate");
 const Schema = mongoose.Schema;
 
 const bulkBreakerSchema = new Schema({
@@ -28,10 +29,21 @@ const bulkBreakerSchema = new Schema({
   },
   activated: {type: Boolean, default: false},
   confirmed: { type: Boolean, default: false},
-  ratings: {type: Number}
+  reviews: [
+    {
+      customerId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Poc',
+        autopopulate: true
+      },
+      ratings: {type: Number},
+      comment: {type: String}
+    }
+  ]
 
 });
 
-const BulkBreaker = mongoose.model("BulkBreaker", bulkBreakerSchema);
+bulkBreakerSchema.plugin(mongooseAutoPopulate);
 
+const BulkBreaker = mongoose.model("BulkBreaker", bulkBreakerSchema);
 module.exports = BulkBreaker;

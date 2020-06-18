@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongooseAutoPopulate = require("mongoose-autopopulate");
 const Schema = mongoose.Schema;
 
 const distributorSchema = new Schema({
@@ -29,9 +30,21 @@ const distributorSchema = new Schema({
 
   activated: {type: Boolean, default: false},
   confirmed: { type: Boolean, default: false},
-  ratings: {type: Number}
+  reviews: [
+    {
+      customerId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Poc',
+        autopopulate: true
+      },
+      ratings: {type: Number},
+      comment: {type: String}
+    }
+  ]
 
 });
+
+distributorSchema.plugin(mongooseAutoPopulate);
 
 const Distributor = mongoose.model("Distributor", distributorSchema);
 module.exports = Distributor;
