@@ -24,7 +24,7 @@ router.route('/login')
     .post(
         [
             check('ID', 'Enter your Unique ID').not().isEmpty(),
-            check('password', 'invalid password').exists()
+            // check('password', 'invalid password').exists()
 
         ],
         async (req, res) => {
@@ -97,7 +97,7 @@ router.route('/:_id')
         
         try{
 
-            const distributor = await Distributor.findById({_id: req.params._id}, '-password');
+            const distributor = await Distributor.findById({_id: req.params._id}, '-password').lean();
             res.json(distributor)
         }
         catch(err){
@@ -145,7 +145,7 @@ router.route('/User/:ID')
     .get(async (req, res) => {
         try{
 
-            const distributor = await Distributor.find({ ID: req.params.ID}, '-password');
+            const distributor = await Distributor.find({ ID: req.params.ID}, '-password').lean();
             res.json(distributor);
         }
         catch(err){

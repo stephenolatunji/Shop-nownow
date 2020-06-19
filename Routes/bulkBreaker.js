@@ -12,7 +12,7 @@ router.route('/')
     .get(async (req, res) => {
         try{
 
-            const bulkBreaker = await BulkBreaker.find().lean();
+            const bulkBreaker = await BulkBreaker.find().select('-password').lean();
             res.json(bulkBreaker);
 
         }
@@ -99,7 +99,7 @@ router.route('/:_id')
         
         try{
 
-            const bulkBreaker = await BulkBreaker.findById({_id: req.params._id});
+            const bulkBreaker = await BulkBreaker.findById({_id: req.params._id}, '-password').lean();
             res.json(bulkBreaker)
         }
         catch(err){
@@ -142,11 +142,12 @@ router.route('/:_id')
 
     });
 
+// 
 router.route('/User/:ID')
     .get(async (req, res) => {
         try{
 
-            const bulkBreaker = await BulkBreaker.find({ ID: req.params.ID});
+            const bulkBreaker = await BulkBreaker.find({ ID: req.params.ID}, '-password').lean();
             res.json(bulkBreaker);
         }
         catch(err){
