@@ -12,7 +12,10 @@ router.route('/')
     .get(async (req, res) => {
         try{
 
-            const bulkBreaker = await BulkBreaker.find().select('-password').lean();
+            const bulkBreaker = await BulkBreaker.find()
+            .limit(50)
+            .select('-password')
+            .lean();
             res.json(bulkBreaker);
 
         }

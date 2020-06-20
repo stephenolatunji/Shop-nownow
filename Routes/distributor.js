@@ -11,7 +11,10 @@ const Distributor = require('../Models/Distributor');
 router.route('/')
     .get(async (req, res) => {
         try{
-            const distributor = await Distributor.find().select('-password').lean()
+            const distributor = await Distributor.find()
+            .limit(50)
+            .select('-password')
+            .lean()
             res.json(distributor)
         }
         catch(err){

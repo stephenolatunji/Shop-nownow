@@ -11,7 +11,10 @@ const Poc = require('../Models/Pocs');
 router.route('/')
     .get(async (req, res) => {
         try{
-            const poc = await Poc.find().select('-password').lean();
+            const poc = await Poc.find()
+            .limit(50)
+            .select('-password')
+            .lean();
             res.json(poc);
         }
         catch(err){
