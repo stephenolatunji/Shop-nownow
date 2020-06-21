@@ -12,7 +12,6 @@ router.route('/')
     .get(async (req, res) => {
         try{
             const distributor = await Distributor.find()
-            .limit(50)
             .select('-password')
             .lean()
             res.json(distributor)
@@ -56,7 +55,7 @@ router.route('/login')
                   
                 // const payload = {
                 //     user: {
-                //         id: poc._id
+                //         id: distributor._id
                 //     }
                 // };
 
@@ -71,10 +70,10 @@ router.route('/login')
                 //     }
                 res.json({
                     success: true,
-                    distributor
-                    // token
-                });
-            // });
+                    distributor,
+                //     token
+                // });
+            });
             }
             catch(err){
                 res.status(500).send({sucess: false, err})
@@ -120,7 +119,6 @@ router.route('/changepassword/:_id')
             // if (!errors.isEmpty()) {
             //     res.status(400).json({errors: errors.array()});
             // }
-
         try{
             const distributor = await Distributor.updateOne(
                 {_id: req.params._id},
@@ -130,12 +128,40 @@ router.route('/changepassword/:_id')
             // const salt = await bcrypt.genSalt(10);
             // distributor.password = await bcrypt.hash(password, salt);
 
+
+        //     const payload = {
+        //         user: {
+        //             id: distributor._id
+        //         }
+        //     };
+
+        //     jwt.sign(payload, process.env.JWT_SECRET, {
+        //         expiresIn: 3600
+        //     }, async (err, token) => {
+        //         if(err){
+        //             return res.status(500).send({
+        //                 success: false,
+        //                 message: 'Invalid creditial'
+        //             })
+        //         }
+        //     res.json({
+        //         success: true,
+        //         distributor,
+        //         token
+        //     });
+        // });
+        // }
+        // catch(err){
+        //     res.status(500).send({sucess: false, err})
+        // }
+
             res.status(200).json({
                 success: true,
                 distributor
             });
         }
         catch(err){
+            console.log(err)
             res.status(500).send({
                 sucess: false,
                 err

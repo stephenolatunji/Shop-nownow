@@ -13,7 +13,6 @@ router.route('/')
         try{
 
             const bulkBreaker = await BulkBreaker.find()
-            .limit(50)
             .select('-password')
             .lean();
             res.json(bulkBreaker);
@@ -72,7 +71,7 @@ router.route('/login')
                     res.json({
                         success: true,
                         bulkBreaker,
-                    //  token
+                    //     token
                     // });
                 });
             }

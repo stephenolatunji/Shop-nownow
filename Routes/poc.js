@@ -12,7 +12,6 @@ router.route('/')
     .get(async (req, res) => {
         try{
             const poc = await Poc.find()
-            .limit(50)
             .select('-password')
             .lean();
             res.json(poc);
@@ -70,10 +69,10 @@ router.route('/login')
                 //     }
                     res.json({
                         success: true,
-                        poc
-                        // token
-                    });
-                // });
+                        poc,
+                    //     token
+                    // });
+                });
             }
             catch(err){
                 res.status(500).send({sucess: false, err})
