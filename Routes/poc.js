@@ -12,6 +12,7 @@ router.route('/')
     .get(async (req, res) => {
         try{
             const poc = await Poc.find()
+            .limit(10000)
             .select('-password')
             .lean();
             res.json(poc);
