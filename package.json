@@ -21,7 +21,8 @@
     "helmet": "^3.22.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.16",
-    "mongoose-autopopulate": "^0.12.2"
+    "mongoose-autopopulate": "^0.12.2",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"

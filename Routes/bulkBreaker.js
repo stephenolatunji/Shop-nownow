@@ -4,7 +4,7 @@ require('dotenv').config();
 const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+const request = require('request');
 
 const BulkBreaker = require('../Models/BulkBreaker');
 
@@ -159,5 +159,39 @@ router.route('/User/:ID')
             })
         }
 });
+
+// forgot password
+router.route('/forgotPassword')
+    .post(
+        async (req, res) => {
+            const newPassword = Math.random().toString(36).substring(2).slice(4);
+            const mobile = req.body.mobile;
+            const ID = req.body.userId;
+            
+            try {
+                const distributor = await Distributor.updateOne(
+                    { ID: ID, phone: mobile },
+                    { $set: {password: newPassword } }
+                );
+                // send sms
+               sendSms(ID, mobile, newPassword);
+               res.json({status: true})
+            }
+            catch(err){
+                res.status(500).send('Sever Error')
+            }
+        })
+
+
+// sms
+function sendSms(userId, mobile, password) {
+
+    request(`${process.env.messageApi}&recipient=${mobile}&message=Congratulations! Your new password is ${password} with userId ${userId}`, { json: true }, (err, res, body) => {
+        if (err) return console.log(err); 
+        console.log(body);
+    });
+
+}
+
 
 module.exports = router;
