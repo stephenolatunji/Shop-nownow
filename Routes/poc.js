@@ -167,7 +167,7 @@ router.route('/forgotPassword')
             const ID = req.body.userId;
             
             try {
-                const distributor = await Distributor.updateOne(
+                const poc = await Poc.updateOne(
                     { ID: ID, phone: mobile },
                     { $set: {password: newPassword } }
                 );

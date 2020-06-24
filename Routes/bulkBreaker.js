@@ -169,7 +169,7 @@ router.route('/forgotPassword')
             const ID = req.body.userId;
             
             try {
-                const distributor = await Distributor.updateOne(
+                const bulkbreaker = await BulkBreaker.updateOne(
                     { ID: ID, phone: mobile },
                     { $set: {password: newPassword } }
                 );
