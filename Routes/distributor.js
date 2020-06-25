@@ -195,15 +195,15 @@ router.route('/forgotPassword')
             const newPassword = Math.random().toString(36).substring(2).slice(4);
             const mobile = req.body.mobile;
             const ID = req.body.userId;
-
             try {
                 const distributor = await Distributor.updateOne(
                     { ID: ID, phone: mobile },
                     { $set: {password: newPassword } }
                 );
                 // send sms
-               sendSms(ID, mobile, newPassword);
-               res.json({status: true})
+                sendSms(ID, mobile, newPassword);
+
+                res.json({status: true})
             }
             catch(err){
                 res.status(500).send('Sever Error')
@@ -214,7 +214,10 @@ router.route('/forgotPassword')
 // sms
 function sendSms(userId, mobile, password) {
 
-    request(`${process.env.messageApi}&recipient=${mobile}&message=Congratulations! Your new password is ${password} with userId ${userId}`, { json: true }, (err, res, body) => {
+    const message = `Congratulations! Your new password is ${password} with user Id: ${userId}. Kindly Proceed to Login via the App!`;
+    const _mobile = mobile.slice(1);
+
+    request(`${process.env.messageApi}messagetext=${message}&flash=0&recipients=234${_mobile}`, { json: true }, (err, res, body) => {
         if (err) return console.log(err); 
         console.log(body);
     });
