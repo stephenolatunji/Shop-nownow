@@ -22,6 +22,29 @@ router.route('/')
             console.log(err);
             res.status(500).send({success: false, err})
         }
+    })
+
+    .post(async(req, res) =>{
+        const { ID, name, latitude, longitude} = req.body;
+        try{
+
+
+          let  poc = new Poc({
+              ID,
+              name,
+              latitude,
+              longitude
+          });
+
+          await poc.save();
+          res.json(poc)
+        }
+        catch(err){
+            res.status(500).send({
+                success: false,
+                Error: err
+            })
+        }
     });
    
 router.route('/login')

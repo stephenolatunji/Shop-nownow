@@ -20,6 +20,29 @@ router.route('/')
         catch(err){
             res.status(500).send({success: false, msg: 'Server Error'})
         }
+    })
+
+    .post(async(req, res) =>{
+        const { ID, name, latitude, longitude} = req.body;
+        try{
+
+
+          let  distributor = new Distributor({
+              ID,
+              name,
+              latitude,
+              longitude
+          });
+
+          await distributor.save();
+          res.json(distributor);
+        }
+        catch(err){
+            res.status(500).send({
+                success: false,
+                Error: err
+            })
+        }
     });
 
 
