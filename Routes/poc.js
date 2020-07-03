@@ -13,7 +13,6 @@ router.route('/')
     .get(async (req, res) => {
         try{
             const poc = await Poc.find()
-            .limit(10000)
             .select('-password')
             .lean();
             res.json(poc);
@@ -133,17 +132,7 @@ router.route('/:_id')
     });
 
     router.route('/changepassword/:_id')
-    .patch(
-        // [
-        //     check('password', 'Please enter a password at least 8 character and contain At least one uppercase.At least one lower case.At least one special character.')
-        //     .isLength({min: 8})
-        //     .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, "i")
-        // ],
-            async (req, res) => {
-                // const errors = validationResult(req);
-                // if (!errors.isEmpty()) {
-                //     res.status(400).json({errors: errors.array()});
-                // }
+    .patch(async (req, res) => {
         try{
             const poc = await Poc.updateOne(
                 {_id: req.params._id},

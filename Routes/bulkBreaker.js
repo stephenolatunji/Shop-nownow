@@ -29,7 +29,7 @@ router.route('/')
 
             // let bulkBreaker = await BulkBreaker.find();
 
-          let  bulkBreaker = new BulkBreaker({
+          let bulkBreaker = new BulkBreaker({
               ID,
               name,
               latitude,
@@ -68,14 +68,14 @@ router.route('/login')
                     return res.status(401).send({success: false, msg: 'Unauthorized User'})
                 }
 
-                // const isMatch = await bcrypt.compare(password, bulkBreaker.password)
+                const isMatch = await bcrypt.compare(password, bulkBreaker.password)
 
-                // if(!isMatch){
-                //     return res.status(400).send({
-                //         success: false,
-                //         message: 'Invalid credential'
-                //     })
-                // }
+                if(!isMatch){
+                    return res.status(400).send({
+                        success: false,
+                        message: 'Invalid credential'
+                    })
+                }
 
                 // const payload = {
                 //     user: {
@@ -134,25 +134,18 @@ router.route('/:_id')
     });
 
     router.route('/changepassword/:_id')
-    .patch(
-        // [
-        //     check('password', 'Please enter a password at least 8 character and contain At least one uppercase.At least one lower case.At least one special character.')
-        //     .isLength({min: 8})
-        //     .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, "i")
-        // ],
-            async (req, res) => {
-                // const errors = validationResult(req);
-                // if (!errors.isEmpty()) {
-                //     res.status(400).json({errors: errors.array()});
-                // }
+    .patch(async (req, res) => {
+
+        const password = req.body.password;
+    
         try{
+            const salt = await bcrypt.genSalt(10);
+            const hashed = await bcrypt.hash(password, salt);
+
             const bulkbreaker = await BulkBreaker.updateOne(
                 {_id: req.params._id},
-                {$set: {password: req.body.password}}
+                {$set: {password: hashed}}
             );
-
-            // const salt = await bcrypt.genSalt(10);
-            // bulkBreaker.password = await bcrypt.hash(password, salt);
 
             res.status(200).json({
                 success: true,
@@ -160,8 +153,9 @@ router.route('/:_id')
             });
         }
         catch(err){
+        
             res.status(500).send({
-                sucess: false,
+                success: false,
                 err
             })
         }
