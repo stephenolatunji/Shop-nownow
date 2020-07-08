@@ -132,7 +132,7 @@ router.route('/:_id')
             const hashed = await bcrypt.hash(password, salt);
 
             const bulkbreaker = await BulkBreaker.updateOne(
-                {_id: req.params._id},
+                {ID: req.params._id},
                 {$set: {password: hashed}}
             );
 
