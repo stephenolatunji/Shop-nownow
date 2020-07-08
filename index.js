@@ -27,6 +27,12 @@ const bulkRoute = require('./Routes/bulkBreaker');
 const productRoute = require('./Routes/products');
 const orderRoute = require('./Routes/order');
 
+app.get('/', (req, res) => {
+    res.status(200).send({
+        success: true,
+        msg: 'Welcome to IBShopNow'
+    })
+});
 app.use('/Distributor', distributorRoute);
 app.use('/Poc', pocRt);
 app.use('/Bulkbreaker', bulkRoute);

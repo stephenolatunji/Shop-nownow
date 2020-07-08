@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 require('dotenv').config();
-const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const request = require('request');
@@ -23,56 +22,71 @@ router.route('/')
         }
     })
 
-router.route('/login')
-    .post(
-        [
-            check('ID', 'Enter your Unique ID').not().isEmpty(),
+    .post(async(req, res) =>{
+        const { ID, name, latitude, longitude} = req.body;
+        try{
 
-        ],
-        async (req, res) => {
-            const errors = validationResult(req);
-            if (!errors.isEmpty()) {
-                res.status(400).json({errors: errors.array()});
-            }
+            // let bulkBreaker = await BulkBreaker.find();
+
+          let bulkBreaker = new BulkBreaker({
+              ID,
+              name,
+              latitude,
+              longitude
+          });
+
+          await bulkBreaker.save();
+          res.json(bulkBreaker)
+        }
+        catch(err){
+            res.status(500).send({
+                success: false,
+                Error: err
+            })
+        }
+    });
+
+router.route('/login')
+    .post(async (req, res) => {
             const {ID, password } = req.body;
 
             try{
 
-                const bulkBreaker = await BulkBreaker.findOne({ID, password});
+                const bulkBreaker = await BulkBreaker.findOne({ID});
                 
                 if(!bulkBreaker){
                     return res.status(401).send({success: false, msg: 'Unauthorized User'})
                 }
 
-                // const isMatch = await bcrypt.compare(password, bulkBreaker.password)
+                const isMatch = await bcrypt.compare(password, bulkBreaker.password)
 
-                // if(!isMatch){
-                //     return res.status(400).send({
-                //         success: false,
-                //         message: 'Invalid credential'
-                //     })
-                // }
+                if(!isMatch){
+                    return res.status(400).send({
+                        success: false,
+                        message: 'Invalid credential'
+                    })
+                }
 
-                // const payload = {
-                //     user: {
-                //         id: bulkBreaker._id
-                //     }
-                // };
+                const payload = {
+                    user: {
+                        id: bulkBreaker._id
+                    }
+                };
 
-                // jwt.sign(payload, process.env.JWT_SECRET, {
-                //     expiresIn: 3600,
-                // }, async (err, token) => {
-                //     if(err){
-                //         return res.status(500).send({
-                //             success: false,
-                //             message: 'Error Validating'
-                //         })
-                //     }
+                jwt.sign(payload, process.env.JWT_SECRET, {
+                    expiresIn: 3600,
+                }, async (err, token) => {
+                    if(err){
+                        return res.status(500).send({
+                            success: false,
+                            message: 'Error Validating'
+                        })
+                    }
                     res.json({
                         success: true,
                         bulkBreaker,
-                    //     token
-                    // });
+                        token
+                    });
                 });
             }
             catch(err){
@@ -111,7 +125,6 @@ router.route('/:_id')
 
     router.route('/changepassword/:_id')
     .patch(async (req, res) => {
-console.log(req.body)
         const password = req.body.password;
     
         try{

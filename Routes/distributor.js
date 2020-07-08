@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const {check, validationResult } = require('express-validator');
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -20,60 +19,72 @@ router.route('/')
         catch(err){
             res.status(500).send({success: false, msg: 'Server Error'})
         }
+    })
+
+    .post(async(req, res) =>{
+        const { ID, name, latitude, longitude} = req.body;
+        try{
+
+
+          let  distributor = new Distributor({
+              ID,
+              name,
+              latitude,
+              longitude
+          });
+
+          await distributor.save();
+          res.json(distributor);
+        }
+        catch(err){
+            res.status(500).send({
+                success: false,
+                Error: err
+            })
+        }
     });
 
 
 router.route('/login')
-    .post(
-        [
-            check('ID', 'Enter your Unique ID').not().isEmpty(),
-            // check('password', 'invalid password').exists()
-
-        ],
-        async (req, res) => {
-            const errors = validationResult(req);
-            if (!errors.isEmpty()) {
-                res.status(400).json({errors: errors.array()});
-            }
+    .post(async (req, res) => {
             const {ID, password } = req.body;
-
             try{
 
-                const distributor = await Distributor.findOne({ID, password});
+                const distributor = await Distributor.findOne({ID});
                 
                 if(!distributor){
                     return res.status(401).send({success: false, msg: 'Unauthorized User'})
                 }
 
-                // const isMatch = await bcrypt.compare(password, distributor.password);
+                const isMatch = await bcrypt.compare(password, distributor.password);
 
-                // if(!isMatch){
-                //     return res.status(400).send({
-                //     success: false,
-                //     message: 'Invalid credential'
-                // })
-                // }
+                if(!isMatch){
+                    return res.status(400).send({
+                    success: false,
+                    message: 'Invalid credential'
+                })
+                }
                   
-                // const payload = {
-                //     user: {
-                //         id: distributor._id
-                //     }
-                // };
+                const payload = {
+                    user: {
+                        id: distributor._id
+                    }
+                };
 
-                // jwt.sign(payload, process.env.JWT_SECRET, {
-                //     expiresIn: 3600
-                // }, async (err, token) => {
-                //     if(err){
-                //         return res.status(500).send({
-                //             success: false,
-                //             message: 'Invalid creditial'
-                //         })
-                //     }
+                jwt.sign(payload, process.env.JWT_SECRET, {
+                    expiresIn: 3600
+                }, async (err, token) => {
+                    if(err){
+                        return res.status(500).send({
+                            success: false,
+                            message: 'Invalid creditial'
+                        })
+                    }
                 res.json({
                     success: true,
                     distributor,
-                //     token
-                // });
+                    token
+                });
             });
             }
             catch(err){
@@ -110,25 +121,17 @@ router.route('/:_id')
     });
 
 router.route('/changepassword/:_id')
-    .patch(
-    //     [
-    //     check('password', 'Please enter a password at least 8 character and contain At least one uppercase.At least one lower case.At least one special character.')
-    //     .isLength({min: 8})
-    //     .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, "i")
-    // ],
-        async (req, res) => {
-            // const errors = validationResult(req);
-            // if (!errors.isEmpty()) {
-            //     res.status(400).json({errors: errors.array()});
-            // }
+    .patch(async (req, res) => {
+        const password = req.body.password;
         try{
+            const salt = await bcrypt.genSalt(10);
+            const hashed = await bcrypt.hash(password, salt);
+
             const distributor = await Distributor.updateOne(
                 {_id: req.params._id},
-                {$set: {password: req.body.password}}
+                {$set: {password: hashed}}
             );
 
-            // const salt = await bcrypt.genSalt(10);
-            // distributor.password = await bcrypt.hash(password, salt);
 
 
         //     const payload = {
