@@ -128,7 +128,7 @@ router.route('/changepassword/:_id')
             const hashed = await bcrypt.hash(password, salt);
 
             const distributor = await Distributor.updateOne(
-                { ID: req.params._id },
+                { _id: req.params._id },
                 {
                     $set: {
                         password: hashed,
