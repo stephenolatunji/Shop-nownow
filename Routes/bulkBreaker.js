@@ -58,35 +58,35 @@ router.route('/login')
                     return res.status(401).send({success: false, msg: 'Unauthorized User'})
                 }
 
-                // const isMatch = await bcrypt.compare(password, bulkBreaker.password)
+                const isMatch = await bcrypt.compare(password, bulkBreaker.password)
 
-                // if(!isMatch){
-                //     return res.status(400).send({
-                //         success: false,
-                //         message: 'Invalid credential'
-                //     })
-                // }
+                if(!isMatch){
+                    return res.status(400).send({
+                        success: false,
+                        message: 'Invalid credential'
+                    })
+                }
 
-                // const payload = {
-                //     user: {
-                //         id: bulkBreaker._id
-                //     }
-                // };
+                const payload = {
+                    user: {
+                        id: bulkBreaker._id
+                    }
+                };
 
-                // jwt.sign(payload, process.env.JWT_SECRET, {
-                //     expiresIn: 3600,
-                // }, async (err, token) => {
-                //     if(err){
-                //         return res.status(500).send({
-                //             success: false,
-                //             message: 'Error Validating'
-                //         })
-                //     }
+                jwt.sign(payload, process.env.JWT_SECRET, {
+                    expiresIn: 3600,
+                }, async (err, token) => {
+                    if(err){
+                        return res.status(500).send({
+                            success: false,
+                            message: 'Error Validating'
+                        })
+                    }
                     res.json({
                         success: true,
                         bulkBreaker,
-                    //     token
-                    // });
+                        token
+                    });
                 });
             }
             catch(err){
