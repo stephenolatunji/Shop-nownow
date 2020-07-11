@@ -133,7 +133,10 @@ router.route('/:_id')
 
             const bulkbreaker = await BulkBreaker.updateOne(
                 {ID: req.params._id},
-                {$set: {password: hashed}}
+                {$set: {password: hashed, 
+                        activated: req.body.activated
+                        }
+                }
             );
 
             res.status(200).json({

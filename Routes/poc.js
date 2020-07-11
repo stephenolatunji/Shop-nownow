@@ -129,8 +129,13 @@ router.route('/:_id')
             const hashed = await bcrypt.hash(password, salt);
 
             const poc = await Poc.updateOne(
-                {ID: req.params._id},
-                {$set: {password: hashed}}
+                { ID: req.params._id },
+                {
+                    $set: {
+                        password: hashed,
+                        activated: req.body.activated
+                    }
+                }
             )
 
             res.status(200).json({
