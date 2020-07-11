@@ -49,43 +49,45 @@ router.route('/login')
     .post(async (req, res) => {
             const {ID, password } = req.body;
             try{
-
                 const distributor = await Distributor.findOne({ID});
-                
                 if(!distributor){
                     return res.status(401).send({success: false, msg: 'Unauthorized User'})
                 }
-
+                
                 const isMatch = await bcrypt.compare(password, distributor.password);
-
+                
                 if(!isMatch){
                     return res.status(400).send({
                     success: false,
                     message: 'Invalid credential'
                 })
                 }
-                  
-                const payload = {
-                    user: {
-                        id: distributor._id
-                    }
-                };
 
-                jwt.sign(payload, process.env.JWT_SECRET, {
-                    expiresIn: 3600
-                }, async (err, token) => {
-                    if(err){
-                        return res.status(500).send({
-                            success: false,
-                            message: 'Invalid creditial'
-                        })
-                    }
-                res.json({
-                    success: true,
-                    distributor,
-                    token
-                });
-            });
+                else {
+                    res.json({
+                        success: true,
+                        distributor,
+                        // token
+                    });
+                }
+                  
+                // const payload = {
+                //     user: {
+                //         id: distributor._id
+                //     }
+                // };
+
+                // jwt.sign(payload, process.env.JWT_SECRET, {
+                //     expiresIn: 3600
+                // }, async (err, token) => {
+                //     if(err){
+                //         return res.status(500).send({
+                //             success: false,
+                //             message: 'Invalid creditial'
+                //         })
+                //     }
+               
+            // });
             }
             catch(err){
                 res.status(500).send({sucess: false, err})
@@ -128,8 +130,13 @@ router.route('/changepassword/:_id')
             const hashed = await bcrypt.hash(password, salt);
 
             const distributor = await Distributor.updateOne(
-                {ID: req.params._id},
-                {$set: {password: hashed}}
+                { _id: req.params._id },
+                {
+                    $set: {
+                        password: hashed,
+                        activated: req.body.activated
+                    }
+                }
             );
 
 
