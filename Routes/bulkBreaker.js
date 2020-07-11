@@ -67,27 +67,35 @@ router.route('/login')
                     })
                 }
 
-                const payload = {
-                    user: {
-                        id: bulkBreaker._id
-                    }
-                };
-
-                jwt.sign(payload, process.env.JWT_SECRET, {
-                    expiresIn: 3600,
-                }, async (err, token) => {
-                    if(err){
-                        return res.status(500).send({
-                            success: false,
-                            message: 'Error Validating'
-                        })
-                    }
+                else {
                     res.json({
                         success: true,
                         bulkBreaker,
-                        token
+                        // token
                     });
-                });
+                }
+
+                // const payload = {
+                //     user: {
+                //         id: bulkBreaker._id
+                //     }
+                // };
+
+                // jwt.sign(payload, process.env.JWT_SECRET, {
+                //     expiresIn: 3600,
+                // }, async (err, token) => {
+                //     if(err){
+                //         return res.status(500).send({
+                //             success: false,
+                //             message: 'Error Validating'
+                //         })
+                //     }
+                //     res.json({
+                //         success: true,
+                //         bulkBreaker,
+                //         token
+                //     });
+                // });
             }
             catch(err){
                 res.status(500).send({sucess: false, err})

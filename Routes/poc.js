@@ -65,28 +65,35 @@ router.route('/login')
                     success: false
                     })
                 }
-
-                const payload = {
-                    user: {
-                        id: poc._id
-                    }
-                };
-
-                jwt.sign(payload, process.env.JWT_SECRET, {
-                    expiresIn: 3600
-                }, async (err, token) => {
-                    if(err){
-                        return res.status(500).send({
-                            success: false,
-                            message: 'Invalid creditial'
-                        })
-                    }
+                else {
                     res.json({
                         success: true,
                         poc,
-                        token
+                        // token
                     });
-                });
+                }
+
+                // const payload = {
+                //     user: {
+                //         id: poc._id
+                //     }
+                // };
+
+                // jwt.sign(payload, process.env.JWT_SECRET, {
+                //     expiresIn: 3600
+                // }, async (err, token) => {
+                //     if(err){
+                //         return res.status(500).send({
+                //             success: false,
+                //             message: 'Invalid creditial'
+                //         })
+                //     }
+                //     res.json({
+                //         success: true,
+                //         poc,
+                //         token
+                //     });
+                // });
             }
             catch(err){
                 res.status(500).send({sucess: false, err})
