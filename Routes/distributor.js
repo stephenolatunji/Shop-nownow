@@ -4,6 +4,7 @@ require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const request = require('request');
+const randomString = require('randomstring');
 
 const Distributor = require('../Models/Distributor');
 const { response } = require('express');
@@ -202,13 +203,21 @@ router.route('/User/:ID')
 router.route('/forgotPassword')
     .post(
         async (req, res) => {
-            const newPassword = Math.random().toString(36).substring(2).slice(4);
+            const newPassword = randomString.generate({
+                length: 4,
+                charset: 'alphabetic'
+            }).toLocaleLowerCase();
+
+            const salt = await bcrypt.genSalt(10);
+            const hashed = await bcrypt.hash(newPassword, salt);
+
             const mobile = req.body.mobile;
             const ID = req.body.userId;
+
             try {
                 const distributor = await Distributor.updateOne(
                     { ID: ID, phone: mobile },
-                    { $set: {password: newPassword } }
+                    { $set: {password: hashed } }
                 );
                 // send sms
                 sendSms(ID, mobile, newPassword);
@@ -224,12 +233,12 @@ router.route('/forgotPassword')
 // sms
 function sendSms(userId, mobile, password) {
 
-    const message = `Congratulations! Your new password is ${password} with user Id: ${userId}. Kindly Proceed to Login via the App!`;
+    const message = `Congratulations! Your new password is "${password}" with user Id: ${userId}. Kindly Proceed to Login via the App!`;
     const _mobile = mobile.slice(1);
 
     request(`${process.env.messageApi}messagetext=${message}&flash=0&recipients=234${_mobile}`, { json: true }, (err, res, body) => {
-        if (err) return console.log(err); 
-        console.log(body);
+        if (err) return err; 
+        return true;
     });
 
 }
