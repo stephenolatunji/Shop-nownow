@@ -104,7 +104,10 @@ router.route('/:_id')
                 { _id: req.params._id},
                 {$set: req.body}
             );
-            res.json(distributor);
+                // fetch the user data after update is done
+            const result = await Distributor.findById({_id: req.params._id}, '-password').lean();
+            res.json(result);
+
         }
         catch(err){
             res.status(500).send({ success: false, err})
