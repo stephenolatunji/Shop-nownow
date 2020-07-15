@@ -10,7 +10,7 @@ const Poc = require("../Models/Pocs");
 
 router
   .route("/")
-  .post(async (req, res) => {
+  .post(async (req, res) => {console.log(req.body)
     const { userType, products, requesterID } = req.body;
 
     try {

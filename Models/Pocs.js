@@ -18,7 +18,10 @@ const pocSchema = new Schema({
       sku: { type: String },
       volume: { type: String },
       image: { type: String },
-      price: { type: Number },
+      price: { 
+        bb: { type: Number },
+        poc: { type: Number }
+       },
     },
   ],
   payment: {
