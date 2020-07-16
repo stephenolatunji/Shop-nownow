@@ -19,7 +19,9 @@ const bulkBreakerSchema = new Schema({
       sku: { type: String },
       volume: { type: String },
       image: { type: String },
-      price: { type: Number },
+      price: { 
+        poc: { type: Number }
+       },
     },
   ],
   payment: {

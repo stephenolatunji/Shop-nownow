@@ -39,7 +39,7 @@ app.use('/Bulkbreaker', bulkRoute);
 app.use('/Product', productRoute);
 app.use('/Order', orderRoute);
 
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 9999
 
 // Connect Database and start Server
 connectDB().then(() =>{
