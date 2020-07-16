@@ -14,7 +14,8 @@ router.route('/')
         try{
             const poc = await Poc.find()
             .select('-password')
-            .lean();
+            .lean()
+            .limit(100);
             res.json(poc);
         }
         catch(err){

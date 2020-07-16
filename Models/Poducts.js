@@ -7,7 +7,8 @@ const productSchema = new Schema({
     volume: {type: String},
     recommendedPrice: {
         bb: { type: String },
-        poc: { type: String }
+        poc: { type: String },
+        cp: {  type: String}
     },
     image: {type: String}
 });
