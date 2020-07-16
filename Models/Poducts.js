@@ -5,10 +5,7 @@ const productSchema = new Schema({
     brand: {type: String},
     sku: {type: String},
     volume: {type: String},
-    recommendedPrice: {
-        bb: { type: String },
-        poc: { type: String }
-    },
+    recommendedPrice: {type: String },
     image: {type: String}
 });
 const Product = mongoose.model('Product', productSchema);
