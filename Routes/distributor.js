@@ -51,26 +51,31 @@ router.route('/login')
             const {ID, password } = req.body;
             try{
                 const distributor = await Distributor.findOne({ID});
-                if(!distributor){
-                    return res.status(401).send({success: false, msg: 'Unauthorized User'})
-                }
+                res.json({
+                    success: true,
+                    distributor,
+                    // token
+                });
+                // if(!distributor){
+                //     return res.status(401).send({success: false, msg: 'Unauthorized User'})
+                // }
                 
-                const isMatch = await bcrypt.compare(password, distributor.password);
+                // const isMatch = await bcrypt.compare(password, distributor.password);
                 
-                if(!isMatch){
-                    return res.status(400).send({
-                    success: false,
-                    message: 'Invalid credential'
-                })
-                }
+                // if(!isMatch){
+                //     return res.status(400).send({
+                //     success: false,
+                //     message: 'Invalid credential'
+                // })
+                // }
 
-                else {
-                    res.json({
-                        success: true,
-                        distributor,
-                        // token
-                    });
-                }
+                // else {
+                    // res.json({
+                    //     success: true,
+                    //     distributor,
+                    //     // token
+                    // });
+                // }
                   
                 // const payload = {
                 //     user: {
