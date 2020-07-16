@@ -18,7 +18,11 @@ const distributorSchema = new Schema({
       brand: { type: String },
       sku: { type: String },
       volume: { type: String },
-      image: { type: String }
+      image: { type: String },
+      price: { 
+        bb: { type: Number },
+        poc: { type: Number }
+       },
     },
   ],
   payment: {
