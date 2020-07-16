@@ -20,7 +20,6 @@ const bulkBreakerSchema = new Schema({
       volume: { type: String },
       image: { type: String },
       price: { 
-        bb: { type: Number },
         poc: { type: Number }
        },
     },
