@@ -135,7 +135,8 @@ router.route('/:_id')
     router.route('/changepassword/:_id')
     .patch(async (req, res) => {
         const password = req.body.password;
-    
+        const activated = true;
+
         try{
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash(password, salt);
@@ -143,7 +144,7 @@ router.route('/:_id')
             const bulkbreaker = await BulkBreaker.updateOne(
                 {_id: req.params._id},
                 {$set: {password: hashed, 
-                        activated: req.body.activated
+                        activated: activated
                         }
                 }
             );
