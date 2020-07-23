@@ -151,4 +151,27 @@ router.route("/:_id").patch(async (req, res) => {
     res.status(500).json({ success: false, error: err });
   }
 });
+
+
+router.route('/delivered/:userId')
+  .get(async (req, res) => {
+    const userId = req.params.userId;
+    try{
+      const deliveredOrders = await Order.countDocuments({
+        ownerId: userId,
+        status: 'delivered'
+      });
+
+     res.status(200).json({
+        success: true,
+        deliveredOrders
+      })
+    }
+    catch(err){
+      res.status(500).json({
+        success: false,
+        Error: err
+      })
+    }
+  })
 module.exports = router;
