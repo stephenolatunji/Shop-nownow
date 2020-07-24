@@ -203,7 +203,6 @@ router.route('/User/:ID')
         }
 });
 
-
 // forgot password
 router.route('/forgotPassword')
     .post(
@@ -246,6 +245,40 @@ function sendSms(userId, mobile, password) {
         return true;
     });
 
-}
+};
 
+router.route('/rateme/:_id')
+    .patch(async(req, res) => {
+
+        const rate = req.body.rating;
+
+        try{
+            let rateme = await Distributor.findOne({_id: req.params._id}).select('ratings');
+            rateme = rateme.ratings;
+            const rater = parseInt(rateme.rater + 1);
+
+            const rating = parseFloat(rateme.rating) + parseInt(rate);
+
+            const newRating = await Distributor.updateOne(
+                {_id: req.params._id},
+                {
+                    $set: {
+                        ratings: {
+                            rater: rater,
+                            rating:  rating,
+                            star: rating/rater
+                        }
+
+                    }
+                }
+            )
+            res.send('Updated');
+        }
+        catch(err){
+            return res.status(500).json({
+                success: false,
+                Error: err
+            })
+        }
+    })
 module.exports = router;
