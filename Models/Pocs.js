@@ -30,7 +30,21 @@ const pocSchema = new Schema({
   },
   activated: {type: Boolean, default: false},
   confirmed: { type: Boolean, default: false},
-  ratings: {type: Number}
+  reviews: [
+    {
+      customerId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Poc',
+        autopopulate: true
+      },
+      comment: { type: String }
+    }
+  ],
+  ratings: {
+    rater: { type: Number, default: 0 },
+    rating: { type: Number, default: 0 },
+    star: { type: String }
+  }
  
 });
 

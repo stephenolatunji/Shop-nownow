@@ -38,11 +38,14 @@ const bulkBreakerSchema = new Schema({
         ref: 'Poc',
         autopopulate: true
       },
-      ratings: {type: Number},
       comment: {type: String}
     }
-  ]
-
+  ],
+  ratings: {
+    rater: { type: Number, default: 0 },
+    rating: { type: Number, default: 0 },
+    star: { type: String }
+  }
 });
 
 bulkBreakerSchema.plugin(mongooseAutoPopulate);

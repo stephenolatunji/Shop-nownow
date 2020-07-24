@@ -280,5 +280,5 @@ router.route('/rateme/:_id')
                 Error: err
             })
         }
-    })
+    });
 module.exports = router;
