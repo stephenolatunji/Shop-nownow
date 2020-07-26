@@ -28,10 +28,7 @@ const productRoute = require('./Routes/products');
 const orderRoute = require('./Routes/order');
 
 app.get('/', (req, res) => {
-    res.status(200).send({
-        success: true,
-        msg: 'Welcome to IBShopNow'
-    })
+    res.status(200).send('Welcome to IBShopNow')
 });
 app.use('/Distributor', distributorRoute);
 app.use('/Poc', pocRt);
