@@ -7,15 +7,75 @@ const request = require('request');
 const randomString = require('randomstring');
 
 const Distributor = require('../Models/Distributor');
-const { response } = require('express');
+const Address = require('../Models/address');
+
 
 router.route('/')
-    .get(async (req, res) => {
+.get(async (req, res) => {
+    
+    const distributor = await Distributor.find()
+        .select('-password')
+        .lean();
+
+        res.json(distributor)
+    })
+    
+
+
+    .patch(async (req, res) => {
         try{
             const distributor = await Distributor.find()
             .select('-password')
-            .lean()
-            res.json(distributor)
+            .lean();
+            //const address = await Address.find().lean();
+
+            for (let i = 950; i < distributor.length; i++) {
+                const element = distributor[i].ID;
+                //const address_new = address.filter(singleAddress => singleAddress.ID == element.ID);
+                let address;
+
+                const axios = require('axios');
+
+                if(distributor[i].latitude !== 0 && distributor[i].longitude!==0){
+                   
+
+                    axios.get(
+                        "https://maps.googleapis.com/maps/api/geocode/json?address=" +
+                        distributor[i].latitude +
+                        "," +
+                        distributor[i].longitude +
+                        "&key=AIzaSyDP0uHnHq94o4rGjq0HzhIm6zJ8yA2bZ8A"
+                    )
+                        .then(response => {
+                            address = response.data.results[0].formatted_address;
+                            console.log(distributor[i].ID)
+                            
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                        setTimeout(async() => {
+                            const d = await Distributor.updateOne(
+                                { ID: distributor[i].ID },
+                                {
+                                    $set: {
+                                        address: address
+                                    }
+                                });
+                        }, 1500);
+                }
+
+
+            
+
+
+
+                    
+            }
+
+            res.send('Am done oo!!!');
+
+            
         }
         catch(err){
             res.status(500).send({success: false, msg: 'Server Error'})
