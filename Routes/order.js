@@ -173,21 +173,5 @@ router.route('/delivered/:userId')
       })
     }
   });
-  
-router.route('/All')
-  .get(async (req, res) =>{
-    try{
-      const orders = await Order.find().lean();
-      res.json({
-        success: true,
-        orders
-      })
-    }
-    catch(err){
-      res.status(500).json({
-        success: false,
-        Error: err
-      })
-    }
-  })
+
 module.exports = router;

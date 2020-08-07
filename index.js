@@ -36,7 +36,7 @@ app.use('/Poc', pocRt);
 app.use('/Bulkbreaker', bulkRoute);
 app.use('/Product', productRoute);
 app.use('/Order', orderRoute);
-app.use('Admin', adminRoute)
+app.use('/Admin', adminRoute)
 
 const port = process.env.PORT || 9999
 
