@@ -8,8 +8,7 @@ const BulkBreaker = require("../Models/BulkBreaker");
 const Distributor = require("../Models/Distributor");
 const Poc = require("../Models/Pocs");
 
-router
-  .route("/")
+router.route("/")
   .post(async (req, res) => {console.log(req.body)
     const { userType, products, requesterID } = req.body;
 
@@ -165,6 +164,23 @@ router.route('/delivered/:userId')
      res.status(200).json({
         success: true,
         deliveredOrders
+      })
+    }
+    catch(err){
+      res.status(500).json({
+        success: false,
+        Error: err
+      })
+    }
+  });
+  
+router.route('/All')
+  .get(async (req, res) =>{
+    try{
+      const orders = await Order.find().lean();
+      res.json({
+        success: true,
+        orders
       })
     }
     catch(err){
