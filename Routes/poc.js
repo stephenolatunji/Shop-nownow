@@ -7,6 +7,7 @@ const request = require('request');
 const randomString = require('randomstring');
 
 const Poc = require('../Models/Pocs');
+// const Addre = require('../Models/addre')
 
 
 router.route('/')
@@ -45,7 +46,38 @@ router.route('/')
                 Error: err
             })
         }
-    });
+    })
+
+    // .patch(async (req, res) => {
+    //     try {
+    //         // const address = await Addre.find()
+    //         // .lean();
+            
+    //             const poc = await Poc.find()
+    //                 .select('-password')
+    //                 .lean();
+                    
+    //                 // for (let i = 300; i < poc.length; i++) {
+    //                 //     const element = poc[i].ID;
+    //                 //     const address_new = address.filter(singleAddress => singleAddress.ID == element);
+    //                 //     console.log(address_new, element)
+    //                 //     const d = await Poc.updateOne(
+    //                 //         { ID: element },
+    //                 //         {
+    //                 //             $set: {
+    //                 //                 address: address_new[0].address
+    //                 //             }
+    //                 //         });
+    //                 //     }
+    //                     res.json(poc[809]);
+            
+
+    //     }
+    //     catch (err) {
+    //         res.status(500).send({ success: false, msg: 'Server Error' })
+    //     }
+    // });
+
    
 router.route('/login')
     .post(async (req, res) => {

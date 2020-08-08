@@ -7,8 +7,6 @@ const request = require('request');
 const randomString = require('randomstring');
 
 const BulkBreaker = require('../Models/BulkBreaker');
-const Addre = require('../Models/addre');
-
 
 router.route('/')
     .get(async (req, res) => {
@@ -25,33 +23,6 @@ router.route('/')
         }
     })
 
-    .patch(async (req, res) => {
-        try {
-            const distributor = await BulkBreaker.find().countDocuments()
-                .select('-password')
-                .lean();
-            //const address = await Addre.find();
-
-            // for (let i = 151; i < 200; i++) {
-            //     const element = distributor[i].ID;
-            //     const address_new = address.filter(singleAddress => singleAddress.ID == element);
-            //     const d = await BulkBreaker.updateOne(
-            //         { ID: element },
-            //         {
-            //             $set: {
-            //                 address: address_new[0].address
-            //             }
-            //         });
-            // }
-
-            res.json(distributor);
-
-
-        }
-        catch (err) {
-            res.status(500).send({ success: false, msg: 'Server Error' })
-        }
-    })
 
     .post(async(req, res) =>{
         const { ID, name, latitude, longitude} = req.body;
