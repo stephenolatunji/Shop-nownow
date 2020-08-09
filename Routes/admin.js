@@ -36,7 +36,6 @@ router.route('/')
                         id: admin._id
                     }
                 };
-
                 jwt.sign(payload, process.env.JWT_SECRET, {
                     expiresIn: 3600,
                 }, async (err, token) => {
