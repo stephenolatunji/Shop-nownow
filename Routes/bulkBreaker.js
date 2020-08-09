@@ -24,29 +24,27 @@ router.route('/')
     })
 
 
-    .post(async(req, res) =>{
-        const { ID, name, latitude, longitude} = req.body;
-        try{
+    // .post(async(req, res) =>{
+    //     const { ID, name, latitude, longitude} = req.body;
+    //     try{
 
-            // let bulkBreaker = await BulkBreaker.find();
+    //       let bulkBreaker = new BulkBreaker({
+    //           ID,
+    //           name,
+    //           latitude,
+    //           longitude
+    //       });
 
-          let bulkBreaker = new BulkBreaker({
-              ID,
-              name,
-              latitude,
-              longitude
-          });
-
-          await bulkBreaker.save();
-          res.json(bulkBreaker)
-        }
-        catch(err){
-            res.status(500).send({
-                success: false,
-                Error: err
-            })
-        }
-    });
+    //       await bulkBreaker.save();
+    //       res.json(bulkBreaker)
+    //     }
+    //     catch(err){
+    //         res.status(500).send({
+    //             success: false,
+    //             Error: err
+    //         })
+    //     }
+    // });
 
 router.route('/login')
     .post(async (req, res) => {
