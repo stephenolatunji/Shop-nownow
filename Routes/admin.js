@@ -105,7 +105,7 @@ router.route('/login')
     });
 
 router.route('/Order')
-    .get( auth, async (req, res) => {
+    .get( async (req, res) => {
         try {
             const orders = await Order.find().lean();
             res.json({
