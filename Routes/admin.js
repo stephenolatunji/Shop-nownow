@@ -54,7 +54,7 @@ router.route('/')
         catch(err){
             res.status(500).json({
                 success: false,
-                Error: "Didn't work"
+                Error: "Can not register"
             })
         }
     });
