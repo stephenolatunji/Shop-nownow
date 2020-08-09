@@ -82,28 +82,28 @@ router.route('/')
         }
     })
 
-    .post(async(req, res) =>{
-        const { ID, name, latitude, longitude} = req.body;
-        try{
+    // .post(async(req, res) =>{
+    //     const { ID, name, latitude, longitude} = req.body;
+    //     try{
 
 
-          let  distributor = new Distributor({
-              ID,
-              name,
-              latitude,
-              longitude
-          });
+    //       let  distributor = new Distributor({
+    //           ID,
+    //           name,
+    //           latitude,
+    //           longitude
+    //       });
 
-          await distributor.save();
-          res.json(distributor);
-        }
-        catch(err){
-            res.status(500).send({
-                success: false,
-                Error: err
-            })
-        }
-    });
+    //       await distributor.save();
+    //       res.json(distributor);
+    //     }
+    //     catch(err){
+    //         res.status(500).send({
+    //             success: false,
+    //             Error: err
+    //         })
+    //     }
+    // });
 
 
 router.route('/login')

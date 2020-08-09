@@ -6,6 +6,7 @@ const pocSchema = new Schema({
   name: { type: String },
   password: { type: String },
   phone: { type: String },
+  address: { type: String },
   whatsapp : { type: String},
   viaphone: {type: Boolean, default: false},
   viawhatsapp: {type: Boolean, default: false},

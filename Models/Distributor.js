@@ -7,7 +7,11 @@ const distributorSchema = new Schema({
   name: { type: String },
   password: { type: String },
   phone: { type: String },
+<<<<<<< HEAD
   address: { type: String, default: 'helo' },
+=======
+  address: { type: String },
+>>>>>>> temp
   whatsapp: {type: String},
   viaphone: {type: Boolean, default: false},
   viawhatsapp: {type: Boolean, default: false},

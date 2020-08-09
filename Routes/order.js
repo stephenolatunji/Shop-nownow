@@ -8,8 +8,7 @@ const BulkBreaker = require("../Models/BulkBreaker");
 const Distributor = require("../Models/Distributor");
 const Poc = require("../Models/Pocs");
 
-router
-  .route("/")
+router.route("/")
   .post(async (req, res) => {console.log(req.body)
     const { userType, products, requesterID } = req.body;
 
@@ -173,5 +172,6 @@ router.route('/delivered/:userId')
         Error: err
       })
     }
-  })
+  });
+
 module.exports = router;
