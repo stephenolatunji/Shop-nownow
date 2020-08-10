@@ -44,7 +44,9 @@ const OrderSchema = new Schema(
       type: String,
       default: "new",
       required: true,
-    }
+    },
+    cicAgent: { type: String },
+    cicStatus: { type: String }
 },
   {
     timestamps: true,

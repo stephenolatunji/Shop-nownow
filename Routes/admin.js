@@ -7,7 +7,9 @@ const auth = require('../Middleware/auth')
 
 
 const Admin = require('../Models/Admin');
-const Order = require('../Models/Order')
+const Order = require('../Models/Order');
+const Poc = require('../Models/Pocs');
+const Bulkbreaker = require('../Models/BulkBreaker');
 
 router.route('/')
     .post(async (req, res) =>{
@@ -107,11 +109,16 @@ router.route('/login')
 router.route('/Order')
     .get( async (req, res) => {
         try {
-            const orders = await Order.find().lean();
+            const orders = await Order.find()
+            .populate('pocId', 'ID name phone -_id')
+            .populate('bulkbreaker', 'ID name phone -_id')
+            .populate('items', 'details.brand details.sku details.volume quantity -_id')
+            .lean();
             res.json({
                 success: true,
                 orders
             })
+
         }
         catch (err) {
             res.status(500).json({
@@ -120,5 +127,26 @@ router.route('/Order')
             })
         }
     });
+
+
+router.route("/order/:_id")
+    .patch(async (req, res) => {
+        try {
+            const order = await Order.updateOne(
+                { _id: req.params._id },
+                { $set: 
+                    { cicAgent: req.body.cicAgent, 
+                    cicStatus: req.body.cicStatus
+                    }
+                }
+            );
+            return res.status(200).json({
+                success: true,
+                order,
+            });
+        } catch (err) {
+            res.status(500).json({ success: false, error: err });
+        }
+});
 
 module.exports = router;
