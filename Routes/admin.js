@@ -141,9 +141,10 @@ router.route("/order/:_id")
                     }
                 }
             );
+            const result = await Order.findById({ _id: req.params._id }, '-password').lean();
             return res.status(200).json({
                 success: true,
-                order,
+                result,
             });
         } catch (err) {
             res.status(500).json({ success: false, error: err });
