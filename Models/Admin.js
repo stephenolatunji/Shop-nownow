@@ -3,7 +3,8 @@ const Schema = mongoose.Schema;
 
 const adminSchema = new Schema({
     email: {type: String},
-    password: { type: String }
+    password: { type: String },
+    name: { type: String }
 });
 
 const Admin = mongoose.model('Admin', adminSchema);

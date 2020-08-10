@@ -13,7 +13,7 @@ const Bulkbreaker = require('../Models/BulkBreaker');
 
 router.route('/')
     .post(async (req, res) =>{
-        const { email, password } = req.body;
+        const { email, password, name } = req.body;
 
         try{
             let admin = await Admin.findOne({email});
@@ -24,6 +24,7 @@ router.route('/')
                 });
             }
             admin = new Admin({
+            name,
             email,
             password
             });
