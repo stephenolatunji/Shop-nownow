@@ -112,7 +112,7 @@ router.route('/Order')
         try {
             const orders = await Order.find()
             .populate('pocId', 'ID name phone -_id')
-            .populate('bulkbreaker', 'ID name phone -_id')
+            .populate('bulkbreakerId', 'ID name phone -_id')
             .populate('items', 'details.brand details.sku details.volume quantity -_id')
             .lean();
             res.json({
