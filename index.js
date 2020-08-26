@@ -27,6 +27,7 @@ const bulkRoute = require('./Routes/bulkBreaker');
 const productRoute = require('./Routes/products');
 const orderRoute = require('./Routes/order');
 const adminRoute = require('./Routes/admin');
+const userRouter = require('./Routes/user');
 
 app.get('/', (req, res) => {
     res.status(200).send('Welcome to IBShopNow')
@@ -36,7 +37,8 @@ app.use('/Poc', pocRt);
 app.use('/Bulkbreaker', bulkRoute);
 app.use('/Product', productRoute);
 app.use('/Order', orderRoute);
-app.use('/Admin', adminRoute)
+app.use('/Admin', adminRoute);
+app.use('/user', userRouter);
 
 const port = process.env.PORT || 9999
 

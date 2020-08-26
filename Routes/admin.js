@@ -137,7 +137,8 @@ router.route("/order/:_id")
                 { _id: req.params._id },
                 { $set: 
                     { cicAgent: req.body.cicAgent, 
-                    cicStatus: req.body.cicStatus
+                    cicStatus: req.body.cicStatus,
+                    comment: req.body.comment
                     }
                 }
             );
