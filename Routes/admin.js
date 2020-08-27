@@ -135,11 +135,11 @@ router.route("/order/:_id")
         try {
             const order = await Order.updateOne(
                 { _id: req.params._id },
-                { $set: 
-                    { cicAgent: req.body.cicAgent, 
-                    cicStatus: req.body.cicStatus,
-                    comment: req.body.comment
-                    }
+                { $set: req.body
+                    // { cicAgent: req.body.cicAgent, 
+                    // cicStatus: req.body.cicStatus,
+                    // comment: req.body.comment
+                    // }
                 }
             );
             const result = await Order.findById({ _id: req.params._id }, '-password').lean();
