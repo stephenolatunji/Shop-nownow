@@ -9,7 +9,7 @@ const Distributor = require("../Models/Distributor");
 const Poc = require("../Models/Pocs");
 
 router.route("/")
-  .post(async (req, res) => {console.log(req.body)
+  .post(async (req, res) => {
     const { userType, products, requesterID } = req.body;
 
     try {

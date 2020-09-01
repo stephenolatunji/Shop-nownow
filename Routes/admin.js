@@ -12,55 +12,55 @@ const Poc = require('../Models/Pocs');
 const Bulkbreaker = require('../Models/BulkBreaker');
 
 router.route('/')
-    .post(async (req, res) =>{
-        const { email, password, name } = req.body;
+    // .post(async (req, res) =>{
+    //     const { email, password, name } = req.body;
 
-        try{
-            let admin = await Admin.findOne({email});
-            if(admin ){
-                return res.status(400).json({
-                    success: false,
-                    msg: 'Already exists'
-                });
-            }
-            admin = new Admin({
-            name,
-            email,
-            password
-            });
+    //     try{
+    //         let admin = await Admin.findOne({email});
+    //         if(admin ){
+    //             return res.status(400).json({
+    //                 success: false,
+    //                 msg: 'Already exists'
+    //             });
+    //         }
+    //         admin = new Admin({
+    //         name,
+    //         email,
+    //         password
+    //         });
 
-            const salt = await bcrypt.genSalt(10);
-            admin.password = await bcrypt.hash(password, salt);
+    //         const salt = await bcrypt.genSalt(10);
+    //         admin.password = await bcrypt.hash(password, salt);
             
-            await admin.save();
+    //         await admin.save();
 
-            const payload = {
-                    user: {
-                        id: admin._id
-                    }
-                };
-                jwt.sign(payload, process.env.JWT_SECRET, {
-                    expiresIn: 3600,
-                }, async (err, token) => {
-                    if(err){
-                        return res.status(500).send({
-                            success: false,
-                            message: 'Error Validating'
-                        })
-                    }
-                    res.json({
-                        success: true,
-                        token
-                    });
-                });
-        }
-        catch(err){
-            res.status(500).json({
-                success: false,
-                Error: "Can not register"
-            })
-        }
-    });
+    //         const payload = {
+    //                 user: {
+    //                     id: admin._id
+    //                 }
+    //             };
+    //             jwt.sign(payload, process.env.JWT_SECRET, {
+    //                 expiresIn: 3600,
+    //             }, async (err, token) => {
+    //                 if(err){
+    //                     return res.status(500).send({
+    //                         success: false,
+    //                         message: 'Error Validating'
+    //                     })
+    //                 }
+    //                 res.json({
+    //                     success: true,
+    //                     token
+    //                 });
+    //             });
+    //     }
+    //     catch(err){
+    //         res.status(500).json({
+    //             success: false,
+    //             Error: "Can not register"
+    //         })
+    //     }
+    // });
 
 router.route('/login')
     .post(async (req, res) => {
@@ -135,12 +135,7 @@ router.route("/order/:_id")
         try {
             const order = await Order.updateOne(
                 { _id: req.params._id },
-                { $set: req.body
-                    // { cicAgent: req.body.cicAgent, 
-                    // cicStatus: req.body.cicStatus,
-                    // comment: req.body.comment
-                    // }
-                }
+                { $set: req.body}
             );
             const result = await Order.findById({ _id: req.params._id }, '-password').lean();
             return res.status(200).json({
