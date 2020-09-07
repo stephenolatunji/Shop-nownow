@@ -20,7 +20,7 @@ router.route('/')
 
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                res.status(400).json({ message: errors.array(), success: false});
+               return res.status(400).json({ message: errors.array(), success: false});
             }
             const { firstname, lastname, email, password, address, city, state, phone } = req.body;
             console.log(req.body);
@@ -53,14 +53,20 @@ router.route('/')
                     }
                 };
 
-
                 jwt.sign(payload, process.env.JWT_SECRET, {
                     expiresIn: 3600
                 }, (err, token) => {
                     if (err) {
-                        return res.status(400).send({ success: false, message: 'JWT ERROR' });
+                        return res.status(400).send({
+                            success: false,
+                            message: 'JWT ERROR' 
+                        });
                     }
-                    res.json({ token, user, success: true });
+                    res.json({
+                        token,
+                        user,
+                        success: true 
+                    });
                 });
             }
             catch(err){
@@ -96,7 +102,7 @@ router.route('/login')
         ], async(req, res) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                res.status(400).json({ message: errors.array(), success: false });
+               return res.status(400).json({ message: errors.array(), success: false });
             }
             const { email, password } = req.body;
 
@@ -176,7 +182,7 @@ router.route('/user/:id')
                     { $set: req.body }
                 );
                 const result = await User.findById({ _id: req.params._id }, '-password').lean();
-                return res.status(200).json({
+                res.status(200).json({
                     success: true,
                     result,
                 });
@@ -185,7 +191,6 @@ router.route('/user/:id')
             }
         }
     });
-
 
 
 router.route('/order')
@@ -197,7 +202,7 @@ router.route('/order')
             return res.status(404).send('Order has no seller')
         }
         if(amount.total == amount.subTotal + amount.vat + amount.shipping) {
-            newSeller = new UserOrder({
+           return newSeller = new UserOrder({
                 seller,
                 userInfo,
                 products,
