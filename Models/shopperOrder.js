@@ -1,18 +1,24 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const userOrderSchema = new Schema({
+const shopperOrderSchema = new Schema({
     seller: {
         type: Schema.Types.ObjectId,
         ref: "Poc",
-        required: true,
         autopopulate: true,
     },
     userInfo: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-        autopopulate: true,
+        firstname: { type: String, required: true, trim: true },
+        lastname: { type: String, required: true, trim: true},
+        email: { type: String, required: true, trim: true },
+        address: { type: String, required: true, trim: true },
+        city: { type: String, required: true, trim: true },
+        state: { type: String, required: true, trim: true },
+        phone: { type: String, required: true, trim: true }
+        // type: Schema.Types.ObjectId,
+        // ref: "User",
+        // required: true,
+        // autopopulate: true,
     },
     products: [
         {
@@ -31,7 +37,7 @@ const userOrderSchema = new Schema({
         total: { type: Number }
 
     },
-    status: { type: String },
+    status: { type: String, default: 'pending'},
     cicAgent: { type: String },
     cicStatus: { type: String },
     comment: { type: String }
@@ -41,5 +47,5 @@ const userOrderSchema = new Schema({
         timestamps: true
     }
 );
-const UserOrder = mongoose.model('UserOrder', userOrderSchema);
-module.exports = UserOrder;
+const shopperOrder = mongoose.model('shopperOrder', shopperOrderSchema);
+module.exports = shopperOrder;

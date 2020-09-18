@@ -6,11 +6,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index",
-    "dev": "nodemon index"
+    "mad": "nodemon index"
   },
   "author": "Steve",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^7.2.6",
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
@@ -19,10 +20,11 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-validator": "^6.6.1",
-    "helmet": "^3.22.0",
+    "helmet": "^3.23.3",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.9.16",
+    "mongoose": "^5.10.5",
     "mongoose-autopopulate": "^0.12.2",
+    "paystack": "^2.0.1",
     "randomstring": "^1.1.5",
     "request": "^2.88.2"
   },

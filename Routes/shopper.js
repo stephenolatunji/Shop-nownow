@@ -5,9 +5,10 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const {check, validationResult } = require('express-validator');
 
-const User = require('../Models/User');
+const Shopper = require('../Models/Shopper');
 const Poc = require('../Models/Pocs');
-const UserOrder = require('../Models/userOrder');
+const ShopperOrder = require('../Models/shopperOrder');
+
 
 router.route('/')
     .post(
@@ -30,7 +31,7 @@ router.route('/')
                 if(user){
                     return res.status(400).json('User Already Exists')
                 }
-                user = new User({
+                user = new shopper({
                     firstname,
                     lastname,
                     address,
@@ -42,14 +43,14 @@ router.route('/')
                 });
 
                 const salt = await bcrypt.genSalt(10);
-                user.password = await bcrypt.hash(password, salt);
+                shopper.password = await bcrypt.hash(password, salt);
 
-                await user.save();
+                await shopper.save();
 
 
                 const payload = {
-                    user: {
-                        id: user._id
+                    shopper: {
+                        id: shopper._id
                     }
                 };
 
@@ -64,7 +65,7 @@ router.route('/')
                     }
                     res.json({
                         token,
-                        user,
+                        shopper,
                         success: true 
                     });
                 });
@@ -80,10 +81,10 @@ router.route('/')
     .get(async (req, res) => {
         try{
 
-            const user = await User.find().select('-password').lean();
+            const shopper = await shopper.find().select('-password').lean();
             res.status(200).json({
                 success: true,
-                user
+                shopper
             })
         }
         catch(err){
@@ -107,21 +108,21 @@ router.route('/login')
             const { email, password } = req.body;
 
             try{
-                let user = await User.findOne({email});
-                if(!user){
+                let shopper = await Shopper.findOne({email});
+                if(!shopper){
                     return res.status(404).json({
                         success: false,
-                        message: 'User not Found'
+                        message: 'shopper not Found'
                     })
                 }
-                const isMatch = await bcrypt.compare(password, user.password);
+                const isMatch = await bcrypt.compare(password, shopper.password);
                 if (!isMatch) {
                     return res.status(404).send('Invalid Credentials')
                 }
                 else {
 
                     const payload = {
-                        user: {
+                        shopper: {
                             id: user._id
                         }
                     };
@@ -153,7 +154,7 @@ router.route('/login')
 router.route('/user/:id')
     .get(async(req, res) =>{
         try{
-            const user = await User.findOne({ _id: req.params._id }, '-password')
+            const user = await Shopper.findOne({ _id: req.params._id }, '-password')
             .lean()
             if(!user){
                 return res.status(404).send('User not Found')
@@ -191,83 +192,6 @@ router.route('/user/:id')
             }
         }
     });
-
-
-router.route('/order')
-    .post(async(req, res) => {
-        const {seller, userInfo, products, amount} = req.body;
-
-        let newSeller = await Poc.findOne({_id: seller})
-        if(!newSeller){
-            return res.status(404).send('Order has no seller')
-        }
-        if(amount.total == amount.subTotal + amount.vat + amount.shipping) {
-           return newSeller = new UserOrder({
-                seller,
-                userInfo,
-                products,
-                amount
-            })
-            await newSeller.save();
-            res.json(newSeller)
-        }
-        else {
-            return res.status(404).send('Thank You')
-        }
-    })
-
-    .get(async(req, res) =>{
-        try{
-            const orders = await UserOrder.find().lean();
-            res.json(orders)
-        }
-        catch(err){
-            res.status(500).send(err)
-        }
-    });
-router.route('/order/:id')
-    .get(async(req, res)=> {
-        try {
-            const order = await UserOrder.findOne({_id: req.params.id}).lean();
-            res.json(order)
-        }
-        catch (err) {
-            res.status(500).send(err)
-        }
-    })
-    .patch(async (req, res) => {
-       
-        try {
-            const user = await User.updateOne(
-                { _id: req.params.id },
-                { $set: req.body }
-                );
-                const result = await UserOrder.findById({ _id: req.params.id }).lean();
-                return res.status(200).json({
-                    success: true,
-                    result,
-                });
-            } catch (err) {
-                res.status(500).json({ success: false, error: err });
-            }
-            
-        })
-        
-    router.route('/user_order/:id')
-        .get(async(req, res)=> {
-            try {
-                const order = await UserOrder.find({userInfo: req.params.id})
-                .populate('seller', 'ID name phone address phone -_id')
-                .populate('userInfo', 'firstname lastname phone email address city -_id')
-                .populate('products')
-                .lean();
-                res.json(order)
-            }
-            catch (err) {
-                res.status(500).send(err)
-            }
-        })
-
 module.exports = router;
 
 
