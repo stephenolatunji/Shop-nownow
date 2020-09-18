@@ -6,6 +6,7 @@ const sendGrid = require('@sendgrid/mail')
 const ShopperOrder = require('../Models/shopperOrder');
 const {verifyOrder} = require('../utils');
 
+
 router.route('/order')
     
     .post(async(req, res) => {
@@ -13,7 +14,7 @@ router.route('/order')
         let paystackData;
         try{
             paystackData = await verifyOrder(reference);
-            console.log(paystackData)
+        
             //If invalid reference then order is invalid
             if(!paystackData.status){
                 return res.status(400).json({
@@ -44,13 +45,14 @@ router.route('/order')
                 products
             });
             const email = userInfo.email;
+            const name = userInfo.firstname + ' ' + userInfo.lastname;
 
             sendGrid.setApiKey(process.env.SENDGRID_KEY);
             const msg = {
                 to: email,
                 from: 'info@eyemarket',
                 subject: 'IBShopNow: Your Order Confirmation',
-                html: `<h3>Dear Customer</h3>
+                html: `<h3>Dear ${name}</h3>
                     <p>You have successfully placed an order of ${amount} on our platform</p></br>
                     <p>Kindly wait for confirmation from our sellers</p>`
                 };
@@ -117,7 +119,7 @@ router.route('/order/:id')
         }
         
     })
-    
+  
 router.route('/user_order/:id')
     .get(async(req, res)=> {
         try {
