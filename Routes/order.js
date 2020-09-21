@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+const request =  require("request");
 
 const Order = require("../Models/Order");
 const Item = require("../Models/Items");
@@ -10,7 +11,7 @@ const Poc = require("../Models/Pocs");
 
 router.route("/")
   .post(async (req, res) => {
-    const { userType, products, requesterID } = req.body;
+    const { userType, products, requesterID, sellerMobile, buyerMobile } = req.body;
 
     try {
       const productOwners = new Set(products.map((product) => product.userID))
@@ -60,6 +61,12 @@ router.route("/")
             ),
           });
         }
+        // message
+        const sellerMessage = `Dear User, you have recieved an order from one of your customers, kindly log on to your App to confirm the order.`;
+        const buyerMessage = `Dear buyer, your order has been successfully placed. Kindly wait for confirmation from the seller.`
+        sendSms(sellerMessage, sellerMobile);
+        sendSms(buyerMessage, buyerMobile);
+
         await order.save();
       }
       return res.status(201).json({
@@ -104,6 +111,7 @@ router.route("/")
     }
   });
 
+
 router.route("/:userID").get(async (req, res) => {
   try {
     const { userID } = req.params;
@@ -136,21 +144,27 @@ router.route("/:userID").get(async (req, res) => {
   }
 });
 
-router.route("/:_id").patch(async (req, res) => {
-  try {
-    const order = await Order.updateOne(
-      { _id: req.params._id },
-      { $set: { status: req.body.status } }
-    );
-    return res.status(200).json({
-      success: true,
-      order,
-    });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err });
-  }
-});
-
+router.route("/:_id")
+  .patch(async (req, res) => {
+    const {buyerMobile, status } = req.body;
+    try {
+      const order = await Order.updateOne(
+        { _id: req.params._id },
+        { $set: { status: req.body.status } }
+      );
+      
+      if(status == 'confirmed' || status == 'cancelled'){
+        const message = `Dear customer, your order has been ${status} by the seller.`;
+        sendSms(message, buyerMobile);
+      }
+      return res.status(200).json({
+        success: true,
+        order,
+      });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err });
+    }
+  });
 
 router.route('/delivered/:userId')
   .get(async (req, res) => {
@@ -173,5 +187,13 @@ router.route('/delivered/:userId')
       })
     }
   });
+
+  
+function sendSms(message, mobile) {
+  request(`${process.env.messageApi}messagetext=${message}&flash=0&recipients=234${mobile.slice(1)}`, { json: true }, (err, res, body) => {
+    if (err) console.log(err); 
+    return true;
+  });
+};
 
 module.exports = router;

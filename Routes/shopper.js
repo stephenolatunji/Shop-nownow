@@ -29,7 +29,7 @@ router.route('/')
 
                 let user = await User.findOne({email});
                 if(user){
-                    return res.status(400).json('User Already Exists')
+                    return res.status(400).send('User Already Exists')
                 }
                 user = new shopper({
                     firstname,
@@ -80,7 +80,6 @@ router.route('/')
     })
     .get(async (req, res) => {
         try{
-
             const shopper = await shopper.find().select('-password').lean();
             res.status(200).json({
                 success: true,
@@ -103,7 +102,10 @@ router.route('/login')
         ], async(req, res) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-               return res.status(400).json({ message: errors.array(), success: false });
+               return res.status(400).json({
+                   message: errors.array(),
+                   success: false
+                });
             }
             const { email, password } = req.body;
 

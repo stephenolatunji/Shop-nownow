@@ -15,10 +15,6 @@ const shopperOrderSchema = new Schema({
         city: { type: String, required: true, trim: true },
         state: { type: String, required: true, trim: true },
         phone: { type: String, required: true, trim: true }
-        // type: Schema.Types.ObjectId,
-        // ref: "User",
-        // required: true,
-        // autopopulate: true,
     },
     products: [
         {
