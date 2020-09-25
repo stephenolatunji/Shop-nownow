@@ -24,14 +24,14 @@ router.route('/')
                return res.status(400).json({ message: errors.array(), success: false});
             }
             const { firstname, lastname, email, password, address, city, state, phone } = req.body;
-            console.log(req.body);
+
             try{
 
-                let user = await User.findOne({email});
-                if(user){
-                    return res.status(400).send('User Already Exists')
+                let shopper = await Shopper.findOne({email});
+                if(shopper){
+                    return res.status(400).send('shopper Already Exists')
                 }
-                user = new shopper({
+                shopper = new Shopper({
                     firstname,
                     lastname,
                     address,
@@ -46,8 +46,6 @@ router.route('/')
                 shopper.password = await bcrypt.hash(password, salt);
 
                 await shopper.save();
-
-
                 const payload = {
                     shopper: {
                         id: shopper._id
@@ -80,7 +78,7 @@ router.route('/')
     })
     .get(async (req, res) => {
         try{
-            const shopper = await shopper.find().select('-password').lean();
+            const shopper = await Shopper.find().select('-password').lean();
             res.status(200).json({
                 success: true,
                 shopper
@@ -125,7 +123,7 @@ router.route('/login')
 
                     const payload = {
                         shopper: {
-                            id: user._id
+                            id: shopper._id
                         }
                     };
                     jwt.sign(payload, process.env.JWT_SECRET, {
@@ -153,17 +151,17 @@ router.route('/login')
             }
     });
 
-router.route('/user/:id')
+router.route('/shopper/:id')
     .get(async(req, res) =>{
         try{
-            const user = await Shopper.findOne({ _id: req.params._id }, '-password')
+            const shopper = await Shopper.findOne({ _id: req.params._id }, '-password')
             .lean()
-            if(!user){
-                return res.status(404).send('User not Found')
+            if(!shopper){
+                return res.status(404).send('shopper not Found')
             }
             res.status(200).json({
                 success: true,
-                user
+                shopper
             })
         }
         catch(err){
@@ -180,11 +178,11 @@ router.route('/user/:id')
         }
         catch(err){
             try {
-                const user = await User.updateOne(
+                const shopper = await Shopper.updateOne(
                     { _id: req.params._id },
                     { $set: req.body }
                 );
-                const result = await User.findById({ _id: req.params._id }, '-password').lean();
+                const result = await Shopper.findById({ _id: req.params._id }, '-password').lean();
                 res.status(200).json({
                     success: true,
                     result,
