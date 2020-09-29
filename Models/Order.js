@@ -39,6 +39,8 @@ const OrderSchema = new Schema(
       type: Number,
       default: 0,
     },
+    sellerMobile: { type: String },
+    buyerMobile: { type: String },
 
     status: {
       type: String,
