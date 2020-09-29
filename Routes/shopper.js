@@ -29,7 +29,7 @@ router.route('/')
 
                 let shopper = await Shopper.findOne({email});
                 if(shopper){
-                    return res.status(400).send('shopper Already Exists')
+                    return res.status(400).send('Shopper Already Exists')
                 }
                 shopper = new Shopper({
                     firstname,

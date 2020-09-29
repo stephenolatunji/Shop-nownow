@@ -34,14 +34,12 @@ const OrderSchema = new Schema(
         autopopulate: true,
       }
     ],
-
     totalAmount: {
       type: Number,
       default: 0,
     },
-    sellerMobile: { type: String },
     buyerMobile: { type: String },
-
+    sellerMobile: { type: String },
     status: {
       type: String,
       default: "new",
