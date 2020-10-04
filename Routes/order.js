@@ -73,7 +73,6 @@ router.route("/")
         success: true,
       });
     } catch (err) {
-      console.log(err);
       res.status(500).send({ sucess: false, error: err.messsage });
     }
   })
