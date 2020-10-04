@@ -59,8 +59,10 @@ router.route("/")
               (acc, item) => acc + item.quantity * item.price,
               0
             ),
+            sellerMobile,
+            buyerMobile
           });
-        }
+        };
         // message
         const sellerMessage = `Dear User, you have recieved an order from one of your customers, kindly log on to your App to confirm the order.`;
         const buyerMessage = `Dear buyer, your order has been successfully placed. Kindly wait for confirmation from the seller.`
@@ -69,7 +71,7 @@ router.route("/")
 
         await order.save();
       }
-      return res.status(201).json({
+      res.status(201).json({
         success: true,
       });
     } catch (err) {
@@ -146,13 +148,13 @@ router.route("/:userID").get(async (req, res) => {
 
 router.route("/:_id")
   .patch(async (req, res) => {
-    const {buyerMobile, status } = req.body;
     try {
       const order = await Order.updateOne(
         { _id: req.params._id },
         { $set: { status: req.body.status } }
       );
-      
+      const order_ = await Order.findById({_id: req.params._id}).lean();
+      const buyerMobile = order_.buyerMobile;
       if(status == 'confirmed' || status == 'cancelled'){
         const message = `Dear customer, your order has been ${status} by the seller.`;
         sendSms(message, buyerMobile);
