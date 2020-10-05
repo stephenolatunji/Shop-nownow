@@ -147,20 +147,21 @@ router.route("/:userID").get(async (req, res) => {
 
 router.route("/:_id")
   .patch(async (req, res) => {
+    const status = req.body.status;
     try {
       const order = await Order.updateOne(
         { _id: req.params._id },
-        { $set: { status: req.body.status } }
+        { $set: { status: status } }
       );
       const order_ = await Order.findById({_id: req.params._id}).lean();
       const buyerMobile = order_.buyerMobile;
       if(status == 'confirmed' || status == 'cancelled'){
         const message = `Dear customer, your order has been ${status} by the seller.`;
         sendSms(message, buyerMobile);
-      }
+      };
       return res.status(200).json({
         success: true,
-        order,
+        order_
       });
     } catch (err) {
       res.status(500).json({ success: false, error: err });
