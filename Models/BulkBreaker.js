@@ -46,7 +46,9 @@ const bulkBreakerSchema = new Schema({
     rater: { type: Number, default: 0 },
     rating: { type: Number, default: 0 },
     star: { type: String }
-  }
+  },
+  mydream: {type: String},
+  points: {type: String, default: 0, expires: 1728000}
 });
 
 bulkBreakerSchema.plugin(mongooseAutoPopulate);
