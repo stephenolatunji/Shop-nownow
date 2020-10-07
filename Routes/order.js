@@ -48,6 +48,8 @@ router.route("/")
               (acc, item) => acc + item.quantity * (item.price * 1.0241),
               0
             ),
+            sellerMobile,
+            buyerMobile
           });
         } else {
           order = new Order({
@@ -184,7 +186,25 @@ router.route("/:_id")
     }
   });
 
-  
+router.route('/one/:_id')
+   .get(async (req, res) => {
+     try {
+       const order = await Order.findById({ _id: req.params._id }).lean();
+
+       res.json({
+         success: true,
+         order
+       })
+     }
+     catch (err) {
+       res.status(500).json({
+         success: false,
+         Error: err
+       })
+     }
+   })
+
+
 router.route('/delivered/:userId')
   .get(async (req, res) => {
     const userId = req.params.userId;
