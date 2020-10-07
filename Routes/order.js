@@ -166,8 +166,25 @@ router.route("/:_id")
     } catch (err) {
       res.status(500).json({ success: false, error: err });
     }
+  })
+
+  .get(async(req, res) => {
+    try{
+      const order = await Order.findById({_id: req.params._id}).lean();
+      res.status(200).json({
+        success: true,
+        order
+      })
+    }
+    catch(err){
+      res.status(500).json({
+        Error: err,
+        success: false
+      })
+    }
   });
 
+  
 router.route('/delivered/:userId')
   .get(async (req, res) => {
     const userId = req.params.userId;
