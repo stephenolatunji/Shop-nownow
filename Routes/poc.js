@@ -7,6 +7,8 @@ const request = require('request');
 const randomString = require('randomstring');
 
 const Poc = require('../Models/Pocs');
+const Bdr =require('../Models/BDR');
+
 // const Addre = require('../Models/addre')
 
 
@@ -23,62 +25,39 @@ router.route('/')
             console.log(err);
             res.status(500).send({success: false, err})
         }
-    });
+    })
 
-    // .post(async(req, res) =>{
-    //     const { ID, name, latitude, longitude} = req.body;
-    //     try{
-
-
-    //       let  poc = new Poc({
-    //           ID,
-    //           name,
-    //           latitude,
-    //           longitude
-    //       });
-
-    //       await poc.save();
-    //       res.json(poc)
-    //     }
-    //     catch(err){
-    //         res.status(500).send({
-    //             success: false,
-    //             Error: err
-    //         })
-    //     }
-    // })
-
-    // .patch(async (req, res) => {
-    //     try {
-    //         // const address = await Addre.find()
-    //         // .lean();
-            
-    //             const poc = await Poc.find()
-    //                 .select('-password')
-    //                 .lean();
+    .patch(async (req, res) => {
+        try {
+            const bdr = await Bdr.find()
+            .lean();
+                const poc = await Poc.find()
+                    .select('-password')
+                    .lean();
                     
-    //                 // for (let i = 300; i < poc.length; i++) {
-    //                 //     const element = poc[i].ID;
-    //                 //     const address_new = address.filter(singleAddress => singleAddress.ID == element);
-    //                 //     console.log(address_new, element)
-    //                 //     const d = await Poc.updateOne(
-    //                 //         { ID: element },
-    //                 //         {
-    //                 //             $set: {
-    //                 //                 address: address_new[0].address
-    //                 //             }
-    //                 //         });
-    //                 //     }
-    //                     res.json(poc[809]);
-            
+                    for (let i = 0; i < poc.length; i++) {
+                        const element = poc[i].ID;
+                        const dms_new = bdr.filter(singledms => singledms.ID == element);
+                        
+                        if(dms_new.length !== 0){
+                            const d = await Poc.updateOne(
+                                { ID: element },
+                                {
+                                    $set: {
+                                        bdr: dms_new[0].bdr
+                                    }
+                                });
+                        }
+                        }
+                        console.log(d);
+    
+        }
+        catch (err) {
+            res.status(500).send({ success: false, msg: 'Server Error' })
+        }
+    });
+    
 
-    //     }
-    //     catch (err) {
-    //         res.status(500).send({ success: false, msg: 'Server Error' })
-    //     }
-    // });
-
-   
 router.route('/login')
     .post(async (req, res) => {
             const {ID, password } = req.body;

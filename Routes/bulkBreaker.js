@@ -7,6 +7,7 @@ const request = require('request');
 const randomString = require('randomstring');
 
 const BulkBreaker = require('../Models/BulkBreaker');
+const Bdr = require('../Models/BDR');
 
 router.route('/')
     .get(async (req, res) => {
@@ -23,6 +24,7 @@ router.route('/')
         }
     })
 
+    
 
     // .post(async(req, res) =>{
     //     const { ID, name, latitude, longitude} = req.body;
@@ -71,31 +73,9 @@ router.route('/login')
                     res.json({
                         success: true,
                         bulkBreaker,
-                        // token
+
                     });
                 }
-
-                // const payload = {
-                //     user: {
-                //         id: bulkBreaker._id
-                //     }
-                // };
-
-                // jwt.sign(payload, process.env.JWT_SECRET, {
-                //     expiresIn: 3600,
-                // }, async (err, token) => {
-                //     if(err){
-                //         return res.status(500).send({
-                //             success: false,
-                //             message: 'Error Validating'
-                //         })
-                //     }
-                //     res.json({
-                //         success: true,
-                //         bulkBreaker,
-                //         token
-                //     });
-                // });
             }
             catch(err){
                 res.status(500).send({sucess: false, err})
@@ -257,4 +237,33 @@ router.route('/rateme/:_id')
             })
         }
     });
+
+// I have a dream, a song to sing, if you see the wonder of a fairy tale.
+router.route('/mydream/:ID')
+    .get(async(req, res)=>{
+        try{
+            const bbdream = await BulkBreaker.find({ID: req.params.ID}, 'dms points mydream');
+            const dms = bbdream[0].dms;
+            const points = bbdream[0].points;
+            const dreamPoint = bbdream[0].mydream.point;
+
+            const sum = dms + points;
+            if(sum >= dreamPoint){
+                return res.status(200).json({
+                    success: true
+                })
+            }
+            else{
+                return res.status(400).json({
+                    success: false
+                })
+            }
+        }
+        catch(err){
+            res.status(500).json({
+                success: false,
+                msg: err
+            })
+        }
+    })
 module.exports = router;

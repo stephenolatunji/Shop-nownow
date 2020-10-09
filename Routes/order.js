@@ -9,6 +9,7 @@ const BulkBreaker = require("../Models/BulkBreaker");
 const Distributor = require("../Models/Distributor");
 const Poc = require("../Models/Pocs");
 
+
 router.route("/")
   .post(async (req, res) => {
     const { userType, products, requesterID, sellerMobile, buyerMobile } = req.body;
@@ -157,10 +158,24 @@ router.route("/:_id")
       );
       const order_ = await Order.findById({_id: req.params._id}).lean();
       const buyerMobile = order_.buyerMobile;
-      if(status == 'confirmed' || status == 'cancelled'){
+
+      if(status == 'delivered' && order_.bulkbreakerId !== null){
+        let totalQty = 0;
+
+        order_.items.forEach(async item_id=> {
+            const qty = await Item.findById({_id: item_id}, 'quantity').lean();
+            totalQty += parseFloat(qty.quantity);
+            const point = await BulkBreaker.updateOne(
+              { _id: order_.bulkbreakerId },
+              { $set: { points: totalQty } }
+            );
+        })
+      }
+      else if(status == 'confirmed' || status == 'cancelled'){
         const message = `Dear customer, your order has been ${status} by the seller.`;
         sendSms(message, buyerMobile);
       };
+
       return res.status(200).json({
         success: true,
         order_

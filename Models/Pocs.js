@@ -44,8 +44,9 @@ const pocSchema = new Schema({
   ratings: {
     rater: { type: Number, default: 0 },
     rating: { type: Number, default: 0 },
-    star: { type: String }
-  }
+    star: { type: String },
+  },
+  bdr: { type: String }
  
 });
 
