@@ -115,7 +115,7 @@ router.route('/user/:email')
     
     try{
 
-        const bdr = await Bdr.findById({email: req.params.email}, '-password').lean();
+        const bdr = await Bdr.findOne({email: req.params.email}).lean();
         res.json(bdr)
     }
     catch(err){
