@@ -107,6 +107,22 @@ router.route('/changepassword/:_id')
 
     });
 
+
+    
+router.route('/user/:email')
+    
+.get(async (req, res) => {
+    
+    try{
+
+        const bdr = await Bdr.findById({email: req.params.email}, '-password').lean();
+        res.json(bdr)
+    }
+    catch(err){
+        res.status(500).send('Sever Error')
+    }
+});
+
 //  Fetch Outlets
 
 router.route('/outlets/:email')
