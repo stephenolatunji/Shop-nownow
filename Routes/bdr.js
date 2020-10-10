@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const request = require('request');
-const randomString = require('randomstring');
+const randomize = require('randomatic');
 
 const Bdr = require('../Models/BDR');
 const Poc = require('../Models/Pocs');
+const Token = require('../Models/Token')
 const BulkBreaker = require('../Models/BulkBreaker');
+const request  = require('request');
 
 
 router.route('/')
@@ -116,7 +116,10 @@ router.route('/user/:email')
     try{
 
         const bdr = await Bdr.findOne({email: req.params.email}).lean();
-        res.json(bdr)
+        res.json({
+            success: false,
+            bdr
+        })
     }
     catch(err){
         res.status(500).send('Sever Error')
@@ -144,6 +147,36 @@ router.route('/outlets/:email')
                 msg: err
             })
         }
-    })
+    });
+
+
+// Create OTP for BDR
+
+router.route('/otp')
+
+    .post(async(req, res) => {
+        try{
+            const { otp, outletNumber } = req.body;
+            const message = `Your order verification code is: ${otp}. Please this code expires in 15 minutes.`;
+            sendSms(message, outletNumber);
+            res.status(200).json({
+                success: true,
+                msg: 'sent'
+            })
+        }
+        catch(err){
+            res.status(500).json({
+                success: false,
+                msg: err
+            })
+        }
+    });
+
+function sendSms(message, mobile) {
+    request(`${process.env.messageApi}messagetext=${message}&flash=0&recipients=234${mobile.slice(1)}`, { json: true }, (err, res, body) => {
+        if (err) console.log(err);
+        return true;
+    });
+};
 
 module.exports = router;

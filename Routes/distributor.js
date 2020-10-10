@@ -64,12 +64,6 @@ router.route('/')
                                 });
                         }, 1500);
                 }
-
-
-            
-
-
-
                     
             }
 
@@ -129,34 +123,14 @@ router.route('/login')
                     res.json({
                         success: true,
                         distributor,
-                        // token
                     });
                 }
-                  
-                const payload = {
-                    user: {
-                        id: distributor._id
-                    }
-                };
-
-                // jwt.sign(payload, process.env.JWT_SECRET, {
-                //     expiresIn: 3600
-                // }, async (err, token) => {
-                //     if(err){
-                //         return res.status(500).send({
-                //             success: false,
-                //             message: 'Invalid creditial'
-                //         })
-                //     }
-               
-            // });
             }
             catch(err){
                 res.status(500).send({sucess: false, err})
             }
     });
   
-
 router.route('/:_id')
     .patch(async (req, res) => {
         try{
@@ -204,34 +178,6 @@ router.route('/changepassword/:_id')
                     }
                 }
             );
-
-
-
-        //     const payload = {
-        //         user: {
-        //             id: distributor._id
-        //         }
-        //     };
-
-        //     jwt.sign(payload, process.env.JWT_SECRET, {
-        //         expiresIn: 3600
-        //     }, async (err, token) => {
-        //         if(err){
-        //             return res.status(500).send({
-        //                 success: false,
-        //                 message: 'Invalid creditial'
-        //             })
-        //         }
-        //     res.json({
-        //         success: true,
-        //         distributor,
-        //         token
-        //     });
-        // });
-        // }
-        // catch(err){
-        //     res.status(500).send({sucess: false, err})
-        // }
 
             res.status(200).json({
                 success: true,
