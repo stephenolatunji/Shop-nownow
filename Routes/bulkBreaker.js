@@ -93,7 +93,10 @@ router.route('/:_id')
             {$set: req.body}
             );
             const result = await BulkBreaker.findById({ _id: req.params._id }, '-password').lean();
-            res.json(result);
+            res.json({
+                success: true,
+                result
+            });
         }
         catch(err){
             res.status(500).send({ success: false, err})
