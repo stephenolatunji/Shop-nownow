@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const request =  require("request");
+const rando2mize = require("randomatic")
 
 const Order = require("../Models/Order");
 const Item = require("../Models/Items");
@@ -39,21 +40,22 @@ router.route("/")
 
         let order;
 
-        if (totalItemsQuantity < 80) {
+        // if (totalItemsQuantity < 80) {
+        //   order = new Order({
+        //     [`${userType}Id`]: requesterID,
+        //     items: itemIDs,
+        //     ownerId: productOwner,
+        //     ownerType: productOwnersProds[0].ownerType,
+        //     totalAmount: itemPrices.reduce(
+        //       (acc, item) => acc + item.quantity * (item.price * 1.0241),
+        //       0
+        //     ),
+        //     sellerMobile,
+        //     buyerMobile
+        //   });
+        // } 
           order = new Order({
-            [`${userType}Id`]: requesterID,
-            items: itemIDs,
-            ownerId: productOwner,
-            ownerType: productOwnersProds[0].ownerType,
-            totalAmount: itemPrices.reduce(
-              (acc, item) => acc + item.quantity * (item.price * 1.0241),
-              0
-            ),
-            sellerMobile,
-            buyerMobile
-          });
-        } else {
-          order = new Order({
+            orderId : randomize('aA0', 6), 
             [`${userType}Id`]: requesterID,
             items: itemIDs,
             ownerId: productOwner,
@@ -65,7 +67,7 @@ router.route("/")
             sellerMobile,
             buyerMobile
           });
-        };
+        ;
         // message
         const sellerMessage = `Dear User, you have recieved an order from one of your customers, kindly log on to your App to confirm the order.`;
         const buyerMessage = `Dear buyer, your order has been successfully placed. Kindly wait for confirmation from the seller.`

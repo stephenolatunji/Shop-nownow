@@ -6,25 +6,26 @@ const randomize = require('randomatic');
 
 const Bdr = require('../Models/BDR');
 const Poc = require('../Models/Pocs');
-const Token = require('../Models/Token')
 const BulkBreaker = require('../Models/BulkBreaker');
 const request  = require('request');
+const Order = require('../Models/Order');
+const { Result } = require('express-validator');
 
 
-router.route('/')
-    .get(async (req, res) => {
-        try{
-            const bdr = await Bdr.find()
-            .select('-password')
-            .lean()
-            .limit(100);
-            res.json(bdr);
-        }
-        catch(err){
-            console.log(err);
-            res.status(500).send({success: false, err})
-        }
-    });
+// router.route('/')
+//     .get(async (req, res) => {
+//         try{
+//             const bdr = await Bdr.find()
+//             .select('-password')
+//             .lean()
+//             .limit(100);
+//             res.json(bdr);
+//         }
+//         catch(err){
+//             console.log(err);
+//             res.status(500).send({success: false, err})
+//         }
+//     });
 
    
 router.route('/login')
@@ -65,12 +66,17 @@ router.route('/:_id')
     .get(async (req, res) => {
         
         try{
-
             const bdr = await Bdr.findById({_id: req.params._id}, '-password').lean();
-            res.json(bdr)
+            res.json({
+                success: true,
+                bdr
+            })
         }
         catch(err){
-            res.status(500).send('Sever Error')
+            res.status(500).send({
+                success: false,
+                msg: 'Server Error'
+            })
         }
     });
 
@@ -171,6 +177,31 @@ router.route('/otp')
             })
         }
     });
+
+    router.route('/order/new/:email')
+        .get(async(req, res) => {
+            const email = req.params.email;
+
+            try{
+                const orders = await Order.find({'pocId':{ $ne: null}})
+                .populate('pocId', 'bdr')
+                .lean().then(data=>{  
+                    const result = data.filter(element=>element.pocId.bdr == email);
+
+                    res.status(200).json({
+                        success: true,
+                        result
+                    })
+                })
+                           
+            }
+            catch(err){
+                res.status(500).json({
+                    success: false,
+                    msg: err
+                })
+            }
+        });
 
 function sendSms(message, mobile) {
     request(`${process.env.messageApi}messagetext=${message}&flash=0&recipients=234${mobile.slice(1)}`, { json: true }, (err, res, body) => {

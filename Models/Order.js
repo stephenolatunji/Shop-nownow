@@ -24,6 +24,7 @@ const OrderSchema = new Schema(
       default: null,
       autopopulate: true,
     },
+    orderId: {type: String},
     ownerType: { type: String },
     ownerId: { type: String},
     items: [

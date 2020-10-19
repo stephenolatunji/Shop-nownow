@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const Order = require("./Order");
+const mongooseAutoPopulate = require("mongoose-autopopulate");
 const Schema = mongoose.Schema;
 
 const pocSchema = new Schema({
@@ -47,8 +49,8 @@ const pocSchema = new Schema({
     star: { type: String },
   },
   bdr: { type: String }
- 
-});
 
+});
+pocSchema.plugin(mongooseAutoPopulate);
 const Poc = mongoose.model("Poc", pocSchema);
 module.exports = Poc;
