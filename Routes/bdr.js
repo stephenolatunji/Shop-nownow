@@ -184,7 +184,8 @@ router.route('/otp')
 
             try{
                 const orders = await Order.find({'pocId':{ $ne: null}})
-                .populate('pocId', 'bdr')
+                .populate('pocId', 'bdr name phone')
+                .populate('items')
                 .lean().then(data=>{  
                     const result = data.filter(element=>element.pocId.bdr == email);
 
@@ -193,7 +194,7 @@ router.route('/otp')
                         result
                     })
                 })
-                           
+    
             }
             catch(err){
                 res.status(500).json({
