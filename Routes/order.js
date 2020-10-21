@@ -22,7 +22,8 @@ router.route("/")
     const { userType, products, requesterID, sellerMobile, buyerMobile } = req.body;
 
     try {
-      const productOwners = new Set(products.map((product) => product.userID))
+      const productOwners = new Set(products.map((product) => product.userID));
+      const sellerName = products.filter(product => product.ownerDetails.name);
       const totalItemsQuantity = products.reduce(
         (acc, product) => acc + product.quantity,
         0
@@ -62,7 +63,7 @@ router.route("/")
         // } 
           order = new Order({
             orderId : randomize('aA0', 6),
-            seller: products.filter(product => product.ownerDetail.name),
+            seller: sellerName,
             [`${userType}Id`]: requesterID,
             items: itemIDs,
             ownerId: productOwner,
