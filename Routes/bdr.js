@@ -6,26 +6,25 @@ const randomize = require('randomatic');
 
 const Bdr = require('../Models/BDR');
 const Poc = require('../Models/Pocs');
-const BulkBreaker = require('../Models/BulkBreaker');
 const request  = require('request');
 const Order = require('../Models/Order');
-const { Result } = require('express-validator');
 
 
-// router.route('/')
-//     .get(async (req, res) => {
-//         try{
-//             const bdr = await Bdr.find()
-//             .select('-password')
-//             .lean()
-//             .limit(100);
-//             res.json(bdr);
-//         }
-//         catch(err){
-//             console.log(err);
-//             res.status(500).send({success: false, err})
-//         }
-//     });
+
+router.route('/')
+    .get(async (req, res) => {
+        try{
+            const bdr = await Bdr.find()
+            .select('-password')
+            .lean()
+            .limit(100);
+            res.json(bdr);
+        }
+        catch(err){
+            console.log(err);
+            res.status(500).send({success: false, err})
+        }
+    });
 
    
 router.route('/login')

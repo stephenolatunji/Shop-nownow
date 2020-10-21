@@ -27,7 +27,8 @@
     "paystack": "^2.0.1",
     "randomatic": "^3.1.1",
     "randomstring": "^1.1.5",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "web-push": "^3.4.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"

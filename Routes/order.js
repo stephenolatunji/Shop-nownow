@@ -1,14 +1,20 @@
 const express = require("express");
+require('dotenv').config();
 const router = express.Router();
 const mongoose = require("mongoose");
 const request =  require("request");
-const rando2mize = require("randomatic")
+const randomize = require("randomatic");
+const webpush = require('web-push');
 
 const Order = require("../Models/Order");
 const Item = require("../Models/Items");
 const BulkBreaker = require("../Models/BulkBreaker");
 const Distributor = require("../Models/Distributor");
 const Poc = require("../Models/Pocs");
+
+
+
+webpush.setVapidDetails('mailto:info@ibshopnow.com', process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY)
 
 
 router.route("/")
@@ -55,7 +61,8 @@ router.route("/")
         //   });
         // } 
           order = new Order({
-            orderId : randomize('aA0', 6), 
+            orderId : randomize('aA0', 6),
+            seller: products.filter(product => product.ownerDetail.userName),
             [`${userType}Id`]: requesterID,
             items: itemIDs,
             ownerId: productOwner,
@@ -242,6 +249,24 @@ router.route('/delivered/:userId')
         Error: err
       })
     }
+  });
+
+  router.route('/push-notification')
+  .post((req, res) => {
+    const subscription = req.body;
+  
+    console.log(subscription)
+  
+    const payload = JSON.stringify({
+      title: 'Hello!',
+      body: 'Check your order! Weyrey dey disguise',
+    })
+  
+    webpush.sendNotification(subscription, payload)
+      .then(result => console.log(result))
+      .catch(e => console.log(e.stack))
+  
+    res.status(200).json({success: true})
   });
 
   
