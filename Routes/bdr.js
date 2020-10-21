@@ -38,7 +38,7 @@ router.route('/login')
                 if(!bdr){
                     return res.status(401).send({success: false, msg: 'Unauthorized User'})
                 }
-
+                
                 const isMatch = await bcrypt.compare(password, bdr.password);
 
                 if(!isMatch){

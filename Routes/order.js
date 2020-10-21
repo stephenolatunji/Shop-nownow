@@ -62,7 +62,7 @@ router.route("/")
         // } 
           order = new Order({
             orderId : randomize('aA0', 6),
-            seller: products.filter(product => product.ownerDetail.userName),
+            seller: products.filter(product => product.ownerDetail.name),
             [`${userType}Id`]: requesterID,
             items: itemIDs,
             ownerId: productOwner,
