@@ -23,6 +23,7 @@ router.route("/")
 
     try {
       const productOwners = new Set(products.map((product) => product.userID));
+
       const totalItemsQuantity = products.reduce(
         (acc, product) => acc + product.quantity,
         0
@@ -41,9 +42,12 @@ router.route("/")
           await item.save();
           itemIDs.push(item._id);
           itemPrices.push({ quantity: item.quantity, price: item.details.price });
-        }
+        };
         // const multiplyBy = totalItemsQuantity >= 80 ? 0.981 : 1;
-
+        const total = itemPrices.reduce(
+          (acc, item) => acc + item.quantity * item.price,
+          0
+        );
         let order;
 
         // if (totalItemsQuantity < 80) {
@@ -68,16 +72,13 @@ router.route("/")
             items: itemIDs,
             ownerId: productOwner,
             ownerType: productOwnersProds[0].ownerType,
-            totalAmount: itemPrices.reduce(
-              (acc, item) => acc + item.quantity * item.price,
-              0
-            ),
+            totalAmount: total,
             sellerMobile,
             buyerMobile
           });
         ;
         // message
-        const sellerMessage = `Dear ${seller}, you have recieved an order of ${totalAmount} from ${buyer}, kindly log on to your App to confirm the order.`;
+        const sellerMessage = `Dear ${seller}, you have recieved an order of ${total} from ${buyer}, kindly log on to your App to confirm the order.`;
         const buyerMessage = `Dear ${buyer}, your ShopNow order has been successfully placed. Kindly wait for confirmation from ${seller}.`
         sendSms(sellerMessage, sellerMobile);
         sendSms(buyerMessage, buyerMobile);
