@@ -28,6 +28,7 @@ const OrderSchema = new Schema(
     ownerType: { type: String },
     ownerId: { type: String},
     seller: {type: String},
+    buyer: {type: String},
     items: [
       {
         type: Schema.Types.ObjectId,
