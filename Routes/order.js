@@ -19,11 +19,10 @@ webpush.setVapidDetails('mailto:info@ibshopnow.com', process.env.VAPID_PUBLIC_KE
 
 router.route("/")
   .post(async (req, res) => {
-    const { userType, products, requesterID, sellerMobile, buyerMobile, seller, buyer } = req.body;
+    const { userType, products, requesterID, sellerMobile, buyerMobile, seller } = req.body;
 
     try {
       const productOwners = new Set(products.map((product) => product.userID));
-
       const totalItemsQuantity = products.reduce(
         (acc, product) => acc + product.quantity,
         0
@@ -42,12 +41,9 @@ router.route("/")
           await item.save();
           itemIDs.push(item._id);
           itemPrices.push({ quantity: item.quantity, price: item.details.price });
-        };
+        }
         // const multiplyBy = totalItemsQuantity >= 80 ? 0.981 : 1;
-        const total = itemPrices.reduce(
-          (acc, item) => acc + item.quantity * item.price,
-          0
-        );
+
         let order;
 
         // if (totalItemsQuantity < 80) {
@@ -68,18 +64,20 @@ router.route("/")
             orderId : randomize('aA0', 6),
             seller: seller,
             [`${userType}Id`]: requesterID,
-            buyer,
             items: itemIDs,
             ownerId: productOwner,
             ownerType: productOwnersProds[0].ownerType,
-            totalAmount: total,
+            totalAmount: itemPrices.reduce(
+              (acc, item) => acc + item.quantity * item.price,
+              0
+            ),
             sellerMobile,
             buyerMobile
           });
         ;
         // message
-        const sellerMessage = `Dear ${seller}, you have recieved an order of ${total} from ${buyer}, kindly log on to your App to confirm the order.`;
-        const buyerMessage = `Dear ${buyer}, your ShopNow order has been successfully placed. Kindly wait for confirmation from ${seller}.`
+        const sellerMessage = `Dear User, you have recieved an order from one of your customers, kindly log on to your App to confirm the order.`;
+        const buyerMessage = `Dear buyer, your order has been successfully placed. Kindly wait for confirmation from the seller.`
         sendSms(sellerMessage, sellerMobile);
         sendSms(buyerMessage, buyerMobile);
 
@@ -183,7 +181,7 @@ router.route("/:_id")
         })
       }
       else if(status == 'confirmed' || status == 'cancelled'){
-        const message = `Dear customer, your ShopNow order has been ${status} by the seller.`;
+        const message = `Dear customer, your order has been ${status} by the seller.`;
         sendSms(message, buyerMobile);
       };
 
