@@ -19,7 +19,7 @@ webpush.setVapidDetails('mailto:info@ibshopnow.com', process.env.VAPID_PUBLIC_KE
 
 router.route("/")
   .post(async (req, res) => {
-    const { userType, products, requesterID, sellerMobile, buyerMobile, seller } = req.body;
+    const { userType, products, requesterID, sellerMobile, buyerMobile, seller, buyer } = req.body;
 
     try {
       const productOwners = new Set(products.map((product) => product.userID));
@@ -44,6 +44,10 @@ router.route("/")
         }
         // const multiplyBy = totalItemsQuantity >= 80 ? 0.981 : 1;
 
+        const total = itemPrices.reduce(
+              (acc, item) => acc + item.quantity * item.price,
+              0
+            );
         let order;
 
         // if (totalItemsQuantity < 80) {
@@ -63,21 +67,19 @@ router.route("/")
           order = new Order({
             orderId : randomize('aA0', 6),
             seller: seller,
+            buyer,
             [`${userType}Id`]: requesterID,
             items: itemIDs,
             ownerId: productOwner,
             ownerType: productOwnersProds[0].ownerType,
-            totalAmount: itemPrices.reduce(
-              (acc, item) => acc + item.quantity * item.price,
-              0
-            ),
+            totalAmount: total,
             sellerMobile,
             buyerMobile
           });
         ;
         // message
-        const sellerMessage = `Dear User, you have recieved an order from one of your customers, kindly log on to your App to confirm the order.`;
-        const buyerMessage = `Dear buyer, your order has been successfully placed. Kindly wait for confirmation from the seller.`
+        const sellerMessage = `Dear ${seller}, you have recieved an order of #${total}from ${buyer}, kindly log on to your App to confirm the order.`;
+        const buyerMessage = `Dear ${buyer}, your order has been successfully placed. Kindly wait for confirmation from the ${seller}.`
         sendSms(sellerMessage, sellerMobile);
         sendSms(buyerMessage, buyerMobile);
 

@@ -22,8 +22,8 @@ const bulkBreakerSchema = new Schema({
       image: { type: String },
       price: { 
         poc: { type: Number }
-       },
-      soldOut: {type: Boolean, default: false},
+      },
+      soldOut: {type: Boolean, default: false}
     },
   ],
   payment: {

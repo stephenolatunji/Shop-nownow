@@ -24,6 +24,7 @@ const distributorSchema = new Schema({
         bb: { type: Number },
         poc: { type: Number }
        },
+      soldOut: {type: Boolean, default: false}
     },
   ],
   payment: {

@@ -23,7 +23,8 @@ const pocSchema = new Schema({
       image: { type: String },
       price: { 
         cp: { type: Number }
-       },
+      },
+      soldOut: {type: Boolean, default: false}
     },
   ],
   payment: {
