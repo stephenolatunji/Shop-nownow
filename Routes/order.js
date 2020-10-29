@@ -249,21 +249,24 @@ router.route('/delivered/:userId').get(async (req, res) => {
 });
 
 router.route('/push-notification/:orderId').post(async(req, res) => {
-  const { subscription } = req.body;
+  const subscription = req.body;
   const order = req.params.orderId;
 
   try{
 
-    const order_ = await Order.findById({_id: order});
-    const payload = JSON.stringify({
-    title: `<h2>Hello!</h2>`,
-    body: `<p>You have received an order of #${order_.totalAmount} from ${order_.buyer}.</p> 
-        <p>Click to view details</p>`,
+     await Order.findById({_id: order}).then(data => {
+      console.log(data);
+       const payload = JSON.stringify({
+       title: `<h2>Hello!</h2>`,
+       body: `<p>You have received an order of #${data.totalAmount} from ${data.name}.</p> 
+           <p>Click to view details</p>`,
+       });
+      
+       webpush.sendNotification(subscription, payload)
+         .then(result => console.log(result))
+         .catch(e => console.log(e.stack));
+
     });
-    const reciever = order_.ownerId
-    webpush.sendNotification(subscription, payload, reciever)
-      .then(result => console.log(result))
-      .catch(e => console.log(e.stack))
 
     res.status(200).json({success: true})
   } 
