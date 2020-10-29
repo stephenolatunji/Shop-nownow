@@ -248,8 +248,10 @@ router.route('/delivered/:userId').get(async (req, res) => {
   }
 });
 
-router.route('/push-notification').post(async(req, res) => {
-  const {subscription, order } = req.body;
+router.route('/push-notification/:orderId').post(async(req, res) => {
+  const { subscription } = req.body;
+  const order = req.params.orderId;
+
   try{
 
     const order_ = await Order.findById({_id: order});
@@ -273,26 +275,26 @@ router.route('/push-notification').post(async(req, res) => {
 });
 
 router.route("/checkOrder/:userID")
-.get(async (req, res) => {
+  .get(async (req, res) => {
 
-  try {
-    const { userID } = req.params;
-    const orders = await Order.find({ ownerId: userID, status: 'new' })
-    .lean();
+    try {
+      const { userID } = req.params;
+      const orders = await Order.find({ ownerId: userID })
+      .lean();
 
-    return res.status(200).json({
-      success: (orders.length > 0)? true : false,
-      order: orders[0],
-      orderSize: orders.length
-    });
-  } 
+      return res.status(200).json({
+        success: (orders.length > 0)? true : false,
+        order: orders[0],
+        orderSize: orders.length
+      });
+    } 
 
-  catch (error) {
-    console.log(error);
-    return res.status(500)
-    .json({ success: false, error });
-  }
-});
+    catch (error) {
+      console.log(error);
+      return res.status(500)
+      .json({ success: false, error });
+    }
+  });
 
   
 function sendSms(message, mobile) {
