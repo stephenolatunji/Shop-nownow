@@ -52,6 +52,7 @@ const bulkBreakerSchema = new Schema({
   mydream: {
    name:{ type: String},
    point: {type: Number},
+   duration: {type: Number},
    time: {type: Date, default: Date.now()}
   },
   points: {type: Number, default: 0},

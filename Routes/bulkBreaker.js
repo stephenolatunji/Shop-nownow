@@ -9,22 +9,17 @@ const randomString = require('randomstring');
 const BulkBreaker = require('../Models/BulkBreaker');
 const Bdr = require('../Models/BDR');
 
-router.route('/')
-    .get(async (req, res) => {
-        try{
-
-            const bulkBreaker = await BulkBreaker.find()
-            .select('-password')
-            .lean();
-            res.json(bulkBreaker);
-
-        }
-        catch(err){
-            res.status(500).send({success: false, err})
-        }
-    })
-
-    
+router.route('/').get(async (req, res) => {
+    try{
+        const bulkBreaker = await BulkBreaker.find()
+        .select('-password')
+        .lean();
+        res.json(bulkBreaker);
+    }
+    catch(err){
+        res.status(500).send({success: false, err})
+    }
+})
 
     // .post(async(req, res) =>{
     //     const { ID, name, latitude, longitude} = req.body;
@@ -48,46 +43,36 @@ router.route('/')
     //     }
     // });
 
-router.route('/login')
-    .post(async (req, res) => {
-            const {ID, password } = req.body;
-
-            try{
-
-                const bulkBreaker = await BulkBreaker.findOne({ID});
-                
-                if(!bulkBreaker){
-                    return res.status(401).send({success: false, msg: 'Unauthorized User'})
-                }
-
-                const isMatch = await bcrypt.compare(password, bulkBreaker.password)
-
-                if(!isMatch){
-                    return res.status(400).send({
-                        success: false,
-                        message: 'Invalid credential'
-                    })
-                }
-
-                else {
-                    res.json({
-                        success: true,
-                        bulkBreaker,
-
-                    });
-                }
-            }
-            catch(err){
-                res.status(500).send({sucess: false, err})
-            }
-    });
+router.route('/login').post(async (req, res) => {
+        const {ID, password } = req.body;
+    try{
+        const bulkBreaker = await BulkBreaker.findOne({ID});
+        if(!bulkBreaker){
+            return res.status(401).send({success: false, msg: 'Unauthorized User'})
+        }
+        const isMatch = await bcrypt.compare(password, bulkBreaker.password)
+        if(!isMatch){
+            return res.status(400).send({
+                success: false,
+                message: 'Invalid credential'
+            })
+        }
+        else {
+            res.json({
+                success: true,
+                bulkBreaker,
+            });
+        }
+    }
+    catch(err){
+        res.status(500).send({sucess: false, err})
+    }
+});
 
 
 router.route('/:_id')
     .patch(async (req, res) => {
-
         try{
-
             const bulkBreaker = await BulkBreaker.updateOne(
             { _id: req.params._id},
             {$set: req.body}
@@ -104,7 +89,6 @@ router.route('/:_id')
     })
 
     .get(async (req, res) => {
-        
         try{
 
             const bulkBreaker = await BulkBreaker.findById({_id: req.params._id}, '-password').lean();
@@ -115,35 +99,32 @@ router.route('/:_id')
         }
     });
 
-    router.route('/changepassword/:_id')
-    .patch(async (req, res) => {
-        const password = req.body.password;
-        const activated = true;
+router.route('/changepassword/:_id').patch(async (req, res) => {
+    const password = req.body.password;
+    const activated = true;
+    try{
+        const salt = await bcrypt.genSalt(10);
+        const hashed = await bcrypt.hash(password, salt);
 
-        try{
-            const salt = await bcrypt.genSalt(10);
-            const hashed = await bcrypt.hash(password, salt);
-
-            const bulkbreaker = await BulkBreaker.updateOne(
-                {_id: req.params._id},
-                {$set: {password: hashed, 
-                        activated: activated
-                        }
-                }
-            );
-
-            res.status(200).json({
-                success: true,
-                bulkbreaker
-            });
-        }
-        catch(err){
-        
-            res.status(500).send({
-                success: false,
-                err
-            })
-        }
+        const bulkbreaker = await BulkBreaker.updateOne(
+            {_id: req.params._id},
+            {$set: {password: hashed, 
+                    activated: activated
+                    }
+            }
+        );
+        res.status(200).json({
+            success: true,
+            bulkbreaker
+        });
+    }
+    catch(err){
+    
+        res.status(500).send({
+            success: false,
+            err
+        })
+    }
 
     });
 

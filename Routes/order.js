@@ -212,64 +212,68 @@ router.route("/:_id")
     }
   });
 
-router.route('/one/:_id')
-   .get(async (req, res) => {
-     try {
-       const order = await Order.findById({ _id: req.params._id }).lean();
+router.route('/one/:_id').get(async (req, res) => {
+  try {
+    const order = await Order.findById({ _id: req.params._id }).lean();
 
-       res.json({
-         success: true,
-         order
-       })
-     }
-     catch (err) {
-       res.status(500).json({
-         success: false,
-         Error: err
-       })
-     }
-   })
-
-
-router.route('/delivered/:userId')
-  .get(async (req, res) => {
-    const userId = req.params.userId;
-    try{
-      const deliveredOrders = await Order.countDocuments({
-        ownerId: userId,
-        status: 'delivered'
-      });
-
-     res.status(200).json({
-        success: true,
-        deliveredOrders
-      })
-    }
-    catch(err){
-      res.status(500).json({
-        success: false,
-        Error: err
-      })
-    }
-  });
-
-  router.route('/push-notification')
-  .post((req, res) => {
-    const subscription = req.body;
-  
-    console.log(subscription)
-  
-    const payload = JSON.stringify({
-      title: 'Hello!',
-      body: 'Check your order! Weyrey dey disguise',
+    res.json({
+      success: true,
+      order
     })
-  
-    webpush.sendNotification(subscription, payload)
+  }
+  catch (err) {
+    res.status(500).json({
+      success: false,
+      Error: err
+    })
+  }
+})
+
+
+router.route('/delivered/:userId').get(async (req, res) => {
+  const userId = req.params.userId;
+  try{
+    const deliveredOrders = await Order.countDocuments({
+      ownerId: userId,
+      status: 'delivered'
+    });
+
+    res.status(200).json({
+      success: true,
+      deliveredOrders
+    })
+  }
+  catch(err){
+    res.status(500).json({
+      success: false,
+      Error: err
+    })
+  }
+});
+
+router.route('/push-notification').post(async(req, res) => {
+  const {subscription, order } = req.body;
+  try{
+
+    const order_ = await Order.findById({_id: order});
+    const payload = JSON.stringify({
+    title: `<h2>Hello!</h2>`,
+    body: `<p>You have received an order of #${order_.totalAmount} from ${order_.buyer}.</p> 
+        <p>Click to view details</p>`,
+    });
+    const reciever = order_.ownerId
+    webpush.sendNotification(subscription, payload, reciever)
       .then(result => console.log(result))
       .catch(e => console.log(e.stack))
-  
+
     res.status(200).json({success: true})
-  });
+  } 
+  catch(err){
+    
+  }
+
+
+});
 
   
 function sendSms(message, mobile) {
