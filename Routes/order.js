@@ -257,9 +257,8 @@ router.route('/push-notification/:orderId').post(async(req, res) => {
      await Order.findById({_id: order}).then(data => {
       console.log(data);
        const payload = JSON.stringify({
-       title: `<h2>Hello!</h2>`,
-       body: `<p>You have received an order of #${data.totalAmount} from ${data.name}.</p> 
-           <p>Click to view details</p>`,
+       title: 'Hello!',
+       body: `You have received an order of #${data.totalAmount} from ${data.buyer}. Click to view details`,
        });
       
        webpush.sendNotification(subscription, payload)
