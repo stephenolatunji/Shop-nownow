@@ -12,10 +12,7 @@ const BulkBreaker = require("../Models/BulkBreaker");
 const Distributor = require("../Models/Distributor");
 const Poc = require("../Models/Pocs");
 
-
-
-webpush.setVapidDetails('mailto:info@ibshopnow.com', process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY)
-
+webpush.setVapidDetails('mailto:info@ibshopnow.com', process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
 
 router.route("/")
   .post(async (req, res) => {
@@ -273,6 +270,28 @@ router.route('/push-notification').post(async(req, res) => {
   }
 
 
+});
+
+router.route("/checkOrder/:userID")
+.get(async (req, res) => {
+
+  try {
+    const { userID } = req.params;
+    const orders = await Order.find({ ownerId: userID, status: 'new' })
+    .lean();
+
+    return res.status(200).json({
+      success: (orders.length > 0)? true : false,
+      order: orders[0],
+      orderSize: orders.length
+    });
+  } 
+
+  catch (error) {
+    console.log(error);
+    return res.status(500)
+    .json({ success: false, error });
+  }
 });
 
   
