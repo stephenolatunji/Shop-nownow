@@ -286,7 +286,7 @@ router.route("/checkOrder/:userID")
 
       return res.status(200).json({
         success: (orders.length > 0)? true : false,
-        order: (orders.length > 0)? null : orders[orders.length - 1],
+        order: (orders.length > 0)? orders[orders.length - 1] : null,
         orderSize: orders.length
       });
     } 
