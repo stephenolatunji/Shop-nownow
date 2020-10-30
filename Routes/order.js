@@ -281,7 +281,7 @@ router.route("/checkOrder/:userID")
 
     try {
       const { userID } = req.params;
-      const orders = await Order.find({ ownerId: userID })
+      const orders = await Order.find({ ownerId: userID, status: "new" })
       .lean();
 
       return res.status(200).json({
