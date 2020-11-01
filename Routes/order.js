@@ -77,34 +77,37 @@ router.route("/")
           });
           
           await order.save();
-
-        // get data for sending push notification adn perform push notificationW
-        await Subscription.find({ID: sellerID}).then(data => {
-
-          const subscription = { 
-            "endpoint": data[0].endpoint,
-            "expirationTime": null,
-            "keys": {
-              "p256dh": data[0].p256dh,
-              "auth": data[0].auth
-            }
-          }; 
-
-          const payload = JSON.stringify({
-            title: 'Hello!',
-            body: `Werey!`,
-          });
-
           // message
           const sellerMessage = `Dear ${seller}, you have recieved an order of #${total}from ${buyer}, kindly log on to your App to confirm the order.`;
           const buyerMessage = `Dear ${buyer}, your order has been successfully placed. Kindly wait for confirmation from the ${seller}.`
           
           sendSms(sellerMessage, sellerMobile);
           sendSms(buyerMessage, buyerMobile);
+
+          // get data for sending push notification adn perform push notificationW
+          await Subscription.find({ID: sellerID}).then(data => {
           
-          webpush.sendNotification(subscription, payload)
-            .then(result => console.log(result))
-            .catch(e => console.log(e.stack));
+          if(data.length > 0) {
+            const subscription = { 
+              "endpoint": data[0].endpoint,
+              "expirationTime": null,
+              "keys": {
+                "p256dh": data[0].p256dh,
+                "auth": data[0].auth
+              }
+            }; 
+  
+            const payload = JSON.stringify({
+              title: 'Hello!',
+              body: `Werey Shishey jhare ko koshi!`,
+            });
+
+            webpush.sendNotification(subscription, payload)
+              .then(result => console.log(result))
+              .catch(e => console.log(e.stack));
+          }
+
+          
 
         });
         
