@@ -20,8 +20,6 @@ router.route('/')
         res.json(distributor)
     })
     
-
-
     .patch(async (req, res) => {
         try{
             const distributor = await Distributor.find()

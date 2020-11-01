@@ -12,6 +12,8 @@ const BulkBreaker = require("../Models/BulkBreaker");
 const Distributor = require("../Models/Distributor");
 const Poc = require("../Models/Pocs");
 
+const Subscription = require("../Models/Subscription");
+
 webpush.setVapidDetails('mailto:info@ibshopnow.com', process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
 
 router.route("/")
@@ -248,36 +250,60 @@ router.route('/delivered/:userId').get(async (req, res) => {
   }
 });
 
-router.route('/push-notification').post(async(req, res) => {
-  const subscription = { 
-    "endpoint":"https://fcm.googleapis.com/fcm/send/fFipr74fU4o:APA91bFrJP7LpWCtGtgPlcrd1lKF01JSkty3g4e-BgMkCiTib_axAAvI88bjuobOiwXKvNc157ZI1QqkcOd7In8BZdzN679OwBV4k1u92xbs2Oe86agRkH7A9KHg8Id1mbgK54Kv7-Og",
-    "expirationTime":null,
-    "keys": {
-      "p256dh":"BIz_M1vnMKH1UmxQwcth6oFnKNsvbA3gnHhOz0JUv8zvalFlR4pEGJPjtdhVApKNBR-0PqB3RQXTE6HXoZU1_Gs",
-      "auth":"PJ8O2u6bozJwM2iF-9ZXdg"
-    }
-  }
-
-  try{
-
-    //  await Order.findById({_id: order}).then(data => {
-    //   const buyer = data.bulkbreakerId? data.bulkbreakerId.name : data.pocId.name;
-       const payload = JSON.stringify({
-       title: 'Hello!',
-       body: `Something Changed!`,
-       });
-      
-       webpush.sendNotification(subscription, payload)
-         .then(result => console.log(result))
-         .catch(e => console.log(e.stack));
-
-    // });
-
-    res.status(200).json({success: true})
-  } 
-  catch(err){
+router.route('/save-subscription/:ID')
+  .post(async(req, res) =>{
     
-  }
+    try{
+
+      let subscription = new Subscription({
+          ID: req.params.ID,
+          endpoint: req.body.endpoint,
+          p256dh: req.body.keys.p256dh,
+          auth: req.body.keys.auth
+      });
+
+      await subscription.save();
+      res.status(200).send({
+        success: true
+      })
+    }
+    
+    catch(err){
+        res.status(500).send({
+            success: false,
+            Error: err
+        })
+    }
+      // });
+    // const subscription = { 
+    //   "endpoint":"https://fcm.googleapis.com/fcm/send/fFipr74fU4o:APA91bFrJP7LpWCtGtgPlcrd1lKF01JSkty3g4e-BgMkCiTib_axAAvI88bjuobOiwXKvNc157ZI1QqkcOd7In8BZdzN679OwBV4k1u92xbs2Oe86agRkH7A9KHg8Id1mbgK54Kv7-Og",
+    //   "expirationTime":null,
+    //   "keys": {
+    //     "p256dh":"BIz_M1vnMKH1UmxQwcth6oFnKNsvbA3gnHhOz0JUv8zvalFlR4pEGJPjtdhVApKNBR-0PqB3RQXTE6HXoZU1_Gs",
+    //     "auth":"PJ8O2u6bozJwM2iF-9ZXdg"
+    //   }
+    // }
+
+  // try{
+
+  //   //  await Order.findById({_id: order}).then(data => {
+  //   //   const buyer = data.bulkbreakerId? data.bulkbreakerId.name : data.pocId.name;
+  //      const payload = JSON.stringify({
+  //      title: 'Hello!',
+  //      body: `Something Changed!`,
+  //      });
+      
+  //      webpush.sendNotification(subscription, payload)
+  //        .then(result => console.log(result))
+  //        .catch(e => console.log(e.stack));
+
+  //   // });
+
+  //   res.status(200).json({success: true})
+  // } 
+  // catch(err){
+    
+  // }
 
 
 });
