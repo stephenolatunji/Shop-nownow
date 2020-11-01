@@ -249,7 +249,14 @@ router.route('/delivered/:userId').get(async (req, res) => {
 });
 
 router.route('/push-notification').post(async(req, res) => {
-  const subscription = req.body;
+  const subscription = { 
+    "endpoint":"https://fcm.googleapis.com/fcm/send/fFipr74fU4o:APA91bFrJP7LpWCtGtgPlcrd1lKF01JSkty3g4e-BgMkCiTib_axAAvI88bjuobOiwXKvNc157ZI1QqkcOd7In8BZdzN679OwBV4k1u92xbs2Oe86agRkH7A9KHg8Id1mbgK54Kv7-Og",
+    "expirationTime":null,
+    "keys": {
+      "p256dh":"BIz_M1vnMKH1UmxQwcth6oFnKNsvbA3gnHhOz0JUv8zvalFlR4pEGJPjtdhVApKNBR-0PqB3RQXTE6HXoZU1_Gs",
+      "auth":"PJ8O2u6bozJwM2iF-9ZXdg"
+    }
+  }
 
   try{
 
@@ -257,7 +264,7 @@ router.route('/push-notification').post(async(req, res) => {
     //   const buyer = data.bulkbreakerId? data.bulkbreakerId.name : data.pocId.name;
        const payload = JSON.stringify({
        title: 'Hello!',
-       body: `Push jhare.`,
+       body: `Something Changed!`,
        });
       
        webpush.sendNotification(subscription, payload)
