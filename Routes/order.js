@@ -18,7 +18,7 @@ webpush.setVapidDetails('mailto:info@ibshopnow.com', process.env.VAPID_PUBLIC_KE
 
 router.route("/")
   .post(async (req, res) => {
-    const { userType, products, requesterID, sellerMobile, buyerMobile, seller, buyer } = req.body;
+    const { userType, products, requesterID, sellerMobile, buyerMobile, seller, buyer, sellerID } = req.body;
 
     try {
       const productOwners = new Set(products.map((product) => product.userID));
@@ -79,7 +79,7 @@ router.route("/")
           await order.save();
 
         // get data for sending push notification adn perform push notificationW
-        await Subscription.find({ID: "BB9999"}).then(data => {
+        await Subscription.find({ID: sellerID}).then(data => {
 
           const subscription = { 
             "endpoint": data[0].endpoint,
@@ -92,8 +92,15 @@ router.route("/")
 
           const payload = JSON.stringify({
             title: 'Hello!',
-            body: `Something Changed!`,
+            body: `Werey!`,
           });
+
+          // message
+          const sellerMessage = `Dear ${seller}, you have recieved an order of #${total}from ${buyer}, kindly log on to your App to confirm the order.`;
+          const buyerMessage = `Dear ${buyer}, your order has been successfully placed. Kindly wait for confirmation from the ${seller}.`
+          
+          sendSms(sellerMessage, sellerMobile);
+          sendSms(buyerMessage, buyerMobile);
           
           webpush.sendNotification(subscription, payload)
             .then(result => console.log(result))
@@ -101,11 +108,6 @@ router.route("/")
 
         });
         
-        // message
-        const sellerMessage = `Dear ${seller}, you have recieved an order of #${total}from ${buyer}, kindly log on to your App to confirm the order.`;
-        const buyerMessage = `Dear ${buyer}, your order has been successfully placed. Kindly wait for confirmation from the ${seller}.`
-        sendSms(sellerMessage, sellerMobile);
-        sendSms(buyerMessage, buyerMobile);
       }
       res.status(201).json({
         success: true,
