@@ -248,24 +248,23 @@ router.route('/delivered/:userId').get(async (req, res) => {
   }
 });
 
-router.route('/push-notification/:orderId').post(async(req, res) => {
+router.route('/push-notification').post(async(req, res) => {
   const subscription = req.body;
-  const order = req.params.orderId;
 
   try{
 
-     await Order.findById({_id: order}).then(data => {
-      const buyer = data.bulkbreakerId? data.bulkbreakerId.name : data.pocId.name;
+    //  await Order.findById({_id: order}).then(data => {
+    //   const buyer = data.bulkbreakerId? data.bulkbreakerId.name : data.pocId.name;
        const payload = JSON.stringify({
        title: 'Hello!',
-       body: `You have received an order of ₦${data.totalAmount} from ${buyer}.`,
+       body: `Push jhare.`,
        });
       
        webpush.sendNotification(subscription, payload)
          .then(result => console.log(result))
          .catch(e => console.log(e.stack));
 
-    });
+    // });
 
     res.status(200).json({success: true})
   } 
