@@ -79,14 +79,14 @@ router.route("/")
           await order.save();
 
         // get data for sending push notification adn perform push notificationW
-        const sub = await Subscription.find({ID: product.userID}).then(data => {
+        await Subscription.find({ID: product.userID}).then(data => {
 
           const subscription = { 
-            "endpoint": sub[0].endpoint,
+            "endpoint": data[0].endpoint,
             "expirationTime": null,
             "keys": {
-              "p256dh": sub[0].p256dh,
-              "auth": sub[0].auth
+              "p256dh": data[0].p256dh,
+              "auth": data[0].auth
             }
           }; 
 
