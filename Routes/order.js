@@ -79,14 +79,14 @@ router.route("/")
           await order.save();
 
         // get data for sending push notification adn perform push notificationW
-        const sub = await Subscription.find({ID: product.userID});
+        const sub = await Subscription.find({ID: "BB9999"});
         console.log(sub);
         const subscription = { 
-          "endpoint": sub[0].endpoint,
+          "endpoint": "https://fcm.googleapis.com/fcm/send/ewjN4Feg7zY:APA91bEPYnV2ZYX1LtZ3aOqM8nrl2VuVYenjDFV-9f7pprB8w49FMOZcG1UnNRGmH27tV0J-zzaZ8pPjsap6mx7u2aPcgFZgNo1VaYzoJjNvReCmf4ryD5Ey4WxPcjLGCLo-DRJvZWKQ",
           "expirationTime": null,
           "keys": {
-            "p256dh": sub[0].p256dh,
-            "auth": sub[0].auth
+            "p256dh": "BJHqHRiWuu4D9TkMiabSX3xd9CLNdPKHcmwl5pXzXJ3vv9DrrG3gxo_fFf-BoTKwck-A-Ehag9ZwEgwxsdOcPKM",
+            "auth": "pcllpUfTvUJumcnlfDGOcw"
           }
         }; 
 
