@@ -79,7 +79,7 @@ router.route("/")
           await order.save();
 
         // get data for sending push notification adn perform push notificationW
-        const sub = await Subscription.find({ID: "BB9999"});
+        const sub = await Subscription.find({ID: product.userID});
         console.log(sub);
         const subscription = { 
           "endpoint": "https://fcm.googleapis.com/fcm/send/ewjN4Feg7zY:APA91bEPYnV2ZYX1LtZ3aOqM8nrl2VuVYenjDFV-9f7pprB8w49FMOZcG1UnNRGmH27tV0J-zzaZ8pPjsap6mx7u2aPcgFZgNo1VaYzoJjNvReCmf4ryD5Ey4WxPcjLGCLo-DRJvZWKQ",
