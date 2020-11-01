@@ -7,7 +7,7 @@ router.route('/save-subscription/:ID')
 
     .get(async (req, res) => {
         try{
-            const subscription = await Subscription.find()
+            const subscription = await Subscription.deleteMany()
             .lean();
             res.json(subscription);
         }
@@ -19,29 +19,28 @@ router.route('/save-subscription/:ID')
 
     .post(async(req, res) =>{
     
-    try{
+        try{
 
-      let subscription = new Subscription({
-          ID: req.params.ID,
-          endpoint: req.body.endpoint,
-          p256dh: req.body.keys.p256dh,
-          auth: req.body.keys.auth
-      });
+        let subscription = new Subscription({
+            ID: req.params.ID,
+            endpoint: req.body.endpoint,
+            p256dh: req.body.keys.p256dh,
+            auth: req.body.keys.auth
+        });
 
-      await subscription.save();
-      res.status(200).send({
-        success: true
-      });
-    }
-    
-    catch(err){
-        res.status(500).send({
-            success: false,
-            Error: err
-        })
-    }
-
-});
+        await subscription.save();
+        res.status(200).send({
+            success: true
+        });
+        }
+        
+        catch(err){
+            res.status(500).send({
+                success: false,
+                Error: err
+            })
+        }
+    });
   
 
 module.exports = router;

@@ -100,7 +100,7 @@ router.route("/")
   
             const payload = JSON.stringify({
               title: 'Hello!',
-              body: `Werey Shishey jhare ko koshi!`,
+              body: `You have a new order from ${buyer}`,
             });
 
             webpush.sendNotification(subscription, payload)
