@@ -75,14 +75,35 @@ router.route("/")
             sellerMobile,
             buyerMobile
           });
-        ;
+          
+          await order.save();
+
+        // get data for sending push notification adn perform push notificationW
+        const sub = await Subscription.find({ID: product.userID});
+        const subscription = { 
+          "endpoint": sub[0].endpoint,
+          "expirationTime": null,
+          "keys": {
+            "p256dh": sub[0].p256dh,
+            "auth": sub[0].auth
+          }
+        }; 
+
+        const payload = JSON.stringify({
+          title: 'Hello!',
+          body: `Something Changed!`,
+        });
+        
+        webpush.sendNotification(subscription, payload)
+          .then(result => console.log(result))
+          .catch(e => console.log(e.stack));
+
         // message
         const sellerMessage = `Dear ${seller}, you have recieved an order of #${total}from ${buyer}, kindly log on to your App to confirm the order.`;
         const buyerMessage = `Dear ${buyer}, your order has been successfully placed. Kindly wait for confirmation from the ${seller}.`
         sendSms(sellerMessage, sellerMobile);
         sendSms(buyerMessage, buyerMobile);
 
-        await order.save();
       }
       res.status(201).json({
         success: true,
@@ -265,7 +286,7 @@ router.route('/save-subscription/:ID')
       await subscription.save();
       res.status(200).send({
         success: true
-      })
+      });
     }
     
     catch(err){
@@ -306,29 +327,41 @@ router.route('/save-subscription/:ID')
   // }
 
 
-});
+})
+  
+// .get(async (req, res) => {
+//       try{
+//           const subscription = await Subscription.find({ID: "BB9999"})
+//           .lean();
+//           res.json(subscription);
+//       }
+//       catch(err){
+//           console.log(err);
+//           res.status(500).send({success: false, err})
+//       }
+//   });
 
-router.route("/checkOrder/:userID")
-  .get(async (req, res) => {
+// router.route("/checkOrder/:userID")
+//   .get(async (req, res) => {
 
-    try {
-      const { userID } = req.params;
-      const orders = await Order.find({ ownerId: userID, status: "new" })
-      .lean();
+//     try {
+//       const { userID } = req.params;
+//       const orders = await Order.find({ ownerId: userID, status: "new" })
+//       .lean();
 
-      return res.status(200).json({
-        success: (orders.length > 0)? true : false,
-        order: (orders.length > 0)? orders[orders.length - 1] : null,
-        orderSize: orders.length
-      });
-    } 
+//       return res.status(200).json({
+//         success: (orders.length > 0)? true : false,
+//         order: (orders.length > 0)? orders[orders.length - 1] : null,
+//         orderSize: orders.length
+//       });
+//     } 
 
-    catch (error) {
-      console.log(error);
-      return res.status(500)
-      .json({ success: false, error });
-    }
-  });
+//     catch (error) {
+//       console.log(error);
+//       return res.status(500)
+//       .json({ success: false, error });
+//     }
+//   });
 
   
 function sendSms(message, mobile) {
