@@ -79,36 +79,38 @@ router.route("/")
           await order.save();
 
         // get data for sending push notification adn perform push notificationW
-        const sub = await Subscription.find({ID: product.userID});
-        console.log(sub);
-        const subscription = { 
-          "endpoint": sub[0].endpoint,
-          "expirationTime": null,
-          "keys": {
-            "p256dh": "BJHqHRiWuu4D9TkMiabSX3xd9CLNdPKHcmwl5pXzXJ3vv9DrrG3gxo_fFf-BoTKwck-A-Ehag9ZwEgwxsdOcPKM",
-            "auth": "pcllpUfTvUJumcnlfDGOcw"
-          }
-        }; 
+        const sub = await Subscription.find({ID: product.userID}).then(data => {
 
-        const payload = JSON.stringify({
-          title: 'Hello!',
-          body: `Something Changed!`,
+          const subscription = { 
+            "endpoint": sub[0].endpoint,
+            "expirationTime": null,
+            "keys": {
+              "p256dh": sub[0].p256dh,
+              "auth": sub[0].auth
+            }
+          }; 
+
+          const payload = JSON.stringify({
+            title: 'Hello!',
+            body: `Something Changed!`,
+          });
+          
+          webpush.sendNotification(subscription, payload)
+            .then(result => console.log(result))
+            .catch(e => console.log(e.stack));
+
         });
         
-        webpush.sendNotification(subscription, payload)
-          .then(result => console.log(result))
-          .catch(e => console.log(e.stack));
-
         // message
         const sellerMessage = `Dear ${seller}, you have recieved an order of #${total}from ${buyer}, kindly log on to your App to confirm the order.`;
         const buyerMessage = `Dear ${buyer}, your order has been successfully placed. Kindly wait for confirmation from the ${seller}.`
         sendSms(sellerMessage, sellerMobile);
         sendSms(buyerMessage, buyerMobile);
-
       }
       res.status(201).json({
         success: true,
       });
+
     } catch (err) {
       res.status(500).send({ sucess: false, error: err.messsage });
     }
