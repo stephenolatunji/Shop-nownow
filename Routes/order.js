@@ -13,7 +13,6 @@ const Distributor = require("../Models/Distributor");
 const Poc = require("../Models/Pocs");
 
 const Subscription = require("../Models/Subscription");
-
 webpush.setVapidDetails('mailto:info@ibshopnow.com', process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
 
 router.route("/")
@@ -77,7 +76,7 @@ router.route("/")
           });
           
           // message
-          const sellerMessage = `Dear ${seller}, you have recieved an order of #${total}from ${buyer}, kindly log on to your App to confirm the order.`;
+          const sellerMessage = `Dear ${seller}, you have recieved an order of N${total} from ${buyer}, kindly log on to your App to confirm the order`;
           const buyerMessage = `Dear ${buyer}, your order has been successfully placed. Kindly wait for confirmation from the ${seller}.`
           
           sendSms(sellerMessage, sellerMobile);
@@ -88,28 +87,28 @@ router.route("/")
           // get data for sending push notification adn perform push notificationW
           await Subscription.find({ID: sellerID}).then(data => {
           
-            if(data.length > 0) {
-              const subscription = { 
-                "endpoint": data[0].endpoint,
-                "expirationTime": null,
-                "keys": {
-                  "p256dh": data[0].p256dh,
-                  "auth": data[0].auth
-                }
-              }; 
-    
-              const payload = JSON.stringify({
-                title: 'Hello!',
-                body: `You have a new order from ${buyer}`,
-              });
+          if(data.length > 0) {
+            const subscription = { 
+              "endpoint": data[0].endpoint,
+              "expirationTime": null,
+              "keys": {
+                "p256dh": data[0].p256dh,
+                "auth": data[0].auth
+              }
+            }; 
+  
+            const payload = JSON.stringify({
+              title: 'Hello!',
+              body: `You have a new order from ${buyer}`,
+            });
 
-              webpush.sendNotification(subscription, payload)
-                .then(result => console.log(result))
-                .catch(e => console.log(e.stack));
-            }       
+            webpush.sendNotification(subscription, payload)
+              .then(result => console.log(result))
+              .catch(e => console.log(e.stack));
+          }       
         });
-        
       }
+      
       res.status(201).json({
         success: true,
       });
@@ -238,21 +237,22 @@ router.route("/:_id")
     }
   });
 
-router.route('/one/:_id').get(async (req, res) => {
-  try {
-    const order = await Order.findById({ _id: req.params._id }).lean();
+router.route('/one/:_id')
+  .get(async (req, res) => {
+    try {
+      const order = await Order.findById({ _id: req.params._id }).lean();
 
-    res.json({
-      success: true,
-      order
-    })
-  }
-  catch (err) {
-    res.status(500).json({
-      success: false,
-      Error: err
-    })
-  }
+      res.json({
+        success: true,
+        order
+      })
+    }
+    catch (err) {
+      res.status(500).json({
+        success: false,
+        Error: err
+      })
+    }
 })
 
 
