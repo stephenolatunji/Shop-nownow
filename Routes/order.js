@@ -76,7 +76,7 @@ router.route("/")
           });
           
           // message
-          const sellerMessage = `Dear ${seller}, you have recieved an order of N${total} from ${buyer}, kindly log on to your App to confirm the order`;
+          const sellerMessage = `Dear ${seller}, you have recieved an order of NGN${total} from ${buyer}, kindly log on to your App to confirm the order`;
           const buyerMessage = `Dear ${buyer}, your order has been successfully placed. Kindly wait for confirmation from the ${seller}.`
           
           sendSms(sellerMessage, sellerMobile);
