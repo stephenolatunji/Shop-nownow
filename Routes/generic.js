@@ -7,8 +7,7 @@ router.route('/save-subscription/:ID')
 
     .get(async (req, res) => {
         try{
-            const subscription = await Subscription.deleteMany()
-            .lean();
+            const subscription = await Subscription.deleteMany().lean();
             res.json(subscription);
         }
         catch(err){
@@ -18,7 +17,6 @@ router.route('/save-subscription/:ID')
     })
 
     .post(async(req, res) =>{
-    
         try{
 
         let subscription = new Subscription({
