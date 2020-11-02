@@ -88,25 +88,25 @@ router.route("/")
           // get data for sending push notification adn perform push notificationW
           await Subscription.find({ID: sellerID}).then(data => {
           
-          if(data.length > 0) {
-            const subscription = { 
-              "endpoint": data[0].endpoint,
-              "expirationTime": null,
-              "keys": {
-                "p256dh": data[0].p256dh,
-                "auth": data[0].auth
-              }
-            }; 
-  
-            const payload = JSON.stringify({
-              title: 'Hello!',
-              body: `You have a new order from ${buyer}`,
-            });
+            if(data.length > 0) {
+              const subscription = { 
+                "endpoint": data[0].endpoint,
+                "expirationTime": null,
+                "keys": {
+                  "p256dh": data[0].p256dh,
+                  "auth": data[0].auth
+                }
+              }; 
+    
+              const payload = JSON.stringify({
+                title: 'Hello!',
+                body: `You have a new order from ${buyer}`,
+              });
 
-            webpush.sendNotification(subscription, payload)
-              .then(result => console.log(result))
-              .catch(e => console.log(e.stack));
-          }       
+              webpush.sendNotification(subscription, payload)
+                .then(result => console.log(result))
+                .catch(e => console.log(e.stack));
+            }       
         });
         
       }
