@@ -24,8 +24,8 @@ router.route('/save-subscription/:ID')
 
             if(sub.length!==0) {
                 await Subscription.updateOne(
-                    { _id: req.params.ID },
-                    { $set: { endpoint, p256dh, auth } }
+                    { ID: req.params.ID },
+                    { $set: { endpoint: req.body.endpoint, p256dh: req.body.keys.p256dh, auth: req.body.keys.auth } }
                 );
             }
             else {              
