@@ -37,10 +37,11 @@ const distributorSchema = new Schema({
   confirmed: { type: Boolean, default: false},
   reviews: [
     {
-      customerId: {
-        type: Schema.Types.ObjectId,
-        ref: 'Poc',
-        autopopulate: true
+      customerName: {
+        type: String
+        // type: Schema.Types.ObjectId,
+        // ref: 'Poc',
+        // autopopulate: true
       },
       comment: {type: String}
     }

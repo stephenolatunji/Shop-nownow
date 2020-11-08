@@ -254,7 +254,7 @@ function sendSms(userId, mobile, password) {
 router.route('/rateme/:_id')
     .patch(async(req, res) => {
 
-        const rate = req.body.rating;
+        const {rate, name, review} = req.body;
 
         try{
             let rateme = await Distributor.findOne({_id: req.params._id}).select('ratings');
@@ -265,13 +265,20 @@ router.route('/rateme/:_id')
 
             const newRating = await Distributor.updateOne(
                 {_id: req.params._id},
-                {
+                { 
                     $set: {
                         ratings: {
                             rater: rater,
                             rating:  rating,
                             star: rating/rater
-                        }
+                        },
+                        reviews: [
+                            {
+                                customerName: name,
+                                comment: review
+                            }
+
+                        ]
 
                     }
                 }

@@ -190,7 +190,7 @@ function sendSms(userId, mobile, password) {
 router.route('/rateme/:_id')
     .patch(async (req, res) => {
 
-        const rate = req.body.rating;
+        const {rate, name, review} = req.body;
 
         try {
             let rateme = await BulkBreaker.findOne({ _id: req.params._id }).select('ratings');
@@ -207,7 +207,14 @@ router.route('/rateme/:_id')
                             rater: rater,
                             rating: rating,
                             star: rating / rater
-                        }
+                        },
+                        reviews: [
+                            {
+                                customerName: name,
+                                comment: review
+                            }
+
+                        ]
 
                     }
                 }
