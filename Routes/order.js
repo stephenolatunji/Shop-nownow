@@ -36,6 +36,7 @@ router.route("/")
             details: { ...product },
             quantity: product.quantity,
           });
+          
           await item.save();
           itemIDs.push(item._id);
           itemPrices.push({ quantity: item.quantity, price: item.details.price });
@@ -64,7 +65,7 @@ router.route("/")
         // } 
           order = new Order({
             orderId : randomize('aA0', 6),
-            seller: seller,
+            seller,
             buyer,
             [`${userType}Id`]: requesterID,
             items: itemIDs,
