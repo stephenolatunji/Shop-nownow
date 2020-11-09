@@ -20,14 +20,24 @@ router.route('/save-subscription/:ID')
     .post(async(req, res) =>{
         try{
 
-            let subscription = new Subscription({
-                ID: req.params.ID,
-                endpoint: req.body.endpoint,
-                p256dh: req.body.keys.p256dh,
-                auth: req.body.keys.auth
-            });
+            const sub = await Subscription.find({ID: req.params.ID});
 
-            await subscription.save();
+            if(sub.length!==0) {
+                await Subscription.updateOne(
+                    { ID: req.params.ID },
+                    { $set: { endpoint: req.body.endpoint, p256dh: req.body.keys.p256dh, auth: req.body.keys.auth } }
+                );
+            }
+            else {              
+                let subscription = new Subscription({
+                    ID: req.params.ID,
+                    endpoint: req.body.endpoint,
+                    p256dh: req.body.keys.p256dh,
+                    auth: req.body.keys.auth
+                });
+                await subscription.save();
+            };
+
             res.status(200).send({
                 success: true
             });
@@ -40,6 +50,5 @@ router.route('/save-subscription/:ID')
             })
         }
     });
-  
 
 module.exports = router;

@@ -17,7 +17,7 @@ webpush.setVapidDetails('mailto:info@ibshopnow.com', process.env.VAPID_PUBLIC_KE
 
 router.route("/")
   .post(async (req, res) => {
-    const { userType, products, requesterID, sellerMobile, buyerMobile, seller, buyer, sellerID } = req.body;
+    const { userType, products, requesterID, sellerMobile, buyerMobile, seller, buyer, sellerID, buyerID } = req.body;
 
     try {
       const productOwners = new Set(products.map((product) => product.userID));
@@ -73,7 +73,8 @@ router.route("/")
             ownerType: productOwnersProds[0].ownerType,
             totalAmount: total,
             sellerMobile,
-            buyerMobile
+            buyerMobile,
+            buyerID
           });
           
           // message
@@ -195,18 +196,48 @@ router.route("/:_id")
       );
       const order_ = await Order.findById({_id: req.params._id}).lean();
       const buyerMobile = order_.buyerMobile;
+      const buyerID = order_.buyerID;
 
-      if(status == 'delivered' && order_.bulkbreakerId !== null){
-        let totalQty = 0;
+      if(status == 'delivered'){
 
-        order_.items.forEach(async item_id=> {
-            const qty = await Item.findById({_id: item_id}, 'quantity').lean();
-            totalQty += parseFloat(qty.quantity);
-            const point = await BulkBreaker.updateOne(
-              { _id: order_.bulkbreakerId },
-              { $set: { points: totalQty } }
-            );
-        })
+        if (order_.bulkbreakerId !== null) {
+          let totalQty = 0;
+  
+          order_.items.forEach(async item_id=> {
+              const qty = await Item.findById({_id: item_id}, 'quantity').lean();
+              totalQty += parseFloat(qty.quantity);
+              const point = await BulkBreaker.updateOne(
+                { _id: order_.bulkbreakerId },
+                { $set: { points: totalQty } }
+              );
+          });       
+        }
+
+        // push notification
+        await Subscription.find({ID: buyerID}).then(data => {
+          
+          if(data.length > 0) {
+            const subscription = { 
+              "endpoint": data[0].endpoint,
+              "expirationTime": null,
+              "keys": {
+                "p256dh": data[0].p256dh,
+                "auth": data[0].auth
+              }
+            }; 
+  
+            const payload = JSON.stringify({
+              title: 'IBShopNow',
+              body: `Hello! Your order has been delivered, kindly log in to confirm.`,
+            });
+
+            webpush.sendNotification(subscription, payload)
+              .then(result => console.log(result))
+              .catch(e => console.log(e.stack));
+          }  
+
+        });
+
       }
       else if(status == 'confirmed' || status == 'cancelled'){
         const message = `Dear customer, your order has been ${status} by the seller.`;
@@ -254,8 +285,7 @@ router.route('/one/:_id')
         Error: err
       })
     }
-})
-
+});
 
 router.route('/delivered/:userId').get(async (req, res) => {
   const userId = req.params.userId;
