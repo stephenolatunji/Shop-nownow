@@ -8,6 +8,7 @@ const Bdr = require('../Models/BDR');
 const Poc = require('../Models/Pocs');
 const request  = require('request');
 const Order = require('../Models/Order');
+const BulkBreaker = require('../Models/BulkBreaker')
 
 
 
@@ -139,7 +140,7 @@ router.route('/outlets/:email')
 
         try{
             const pocs = await Poc.find({bdr: email}, 'name ID longitude latitude address phone whatsapp').lean();
-            const bulkbreaker = await BulkBreaker({bdr: email}, 'name ID longitude latitude address phone whatsapp');
+            const bulkbreaker = await BulkBreaker.find({bdr: email}, 'name ID longitude latitude address phone whatsapp').lean();
             res.json({
                 success: true,
                 pocs,
