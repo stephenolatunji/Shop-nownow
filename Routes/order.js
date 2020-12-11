@@ -191,11 +191,11 @@ router.route("/:userID").get(async (req, res) => {
 
 router.route("/:_id")
   .patch(async (req, res) => {
-    const status = req.body.status;
+    const {status, reason} = req.body;
     try {
       const order = await Order.updateOne(
         { _id: req.params._id },
-        { $set: { status: status } }
+        { $set: { status: status, reason: reason }}
       );
       const order_ = await Order.findById({_id: req.params._id}).lean();
       const buyerMobile = order_.buyerMobile;

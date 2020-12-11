@@ -50,6 +50,7 @@ const OrderSchema = new Schema(
       default: "new",
       required: true,
     },
+    reason: { type: String },
     cicAgent: { type: String },
     cicStatus: { type: String },
     comment: { type: String }
