@@ -209,13 +209,19 @@ router.route("/:_id")
           order_.items.forEach(async item_id=> {
               const qty = await Item.findById({_id: item_id}, 'quantity').lean();
               totalQty += parseFloat(qty.quantity);
-              const pointInit = await BulkBreaker.findById({_id: order_.bulkbreakerId }, 'points');
-              const totalPoint = totalQty + pointInit.points
-              console.log(totalPoint)
-              const point = await BulkBreaker.updateOne(
+              const pointInit = await BulkBreaker.findById({_id: order_.bulkbreakerId }, 'points mydream');
+              const totalPoint = totalQty + pointInit.points;
+              console.log(pointInit.mydream);
+              if(pointInit.mydream !== null){
+                 const point = await BulkBreaker.updateOne(
                 { _id: order_.bulkbreakerId },
                 { $set: { points: totalPoint } }
               );
+              }
+              else{
+                console.log('No dream')
+              }
+             
           });       
         }
 

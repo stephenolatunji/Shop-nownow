@@ -169,7 +169,7 @@ router.route('/forgotPassword')
                res.json({status: true})
             }
             catch(err){
-                res.status(500).send('Sever Error')
+                res.status(500).send('Server Error')
             }
         })
 
@@ -256,7 +256,24 @@ router.route('/mydream/:ID')
                 msg: err
             })
         }
-    })
+    });
+
+router.route('/mydream/delete/:_id').patch(
+    async(req, res) => {
+        const id = req.params._id;
+        try{
+            const clearDream = await BulkBreaker.updateOne({_id: id}, 
+                {$unset: {mydream: 1, points: 1}
+                })
+                res.send('Dream Cleared')
+        }catch(err){
+            res.status(500).json({
+                success: false,
+                msg: 'Dream not cleared'
+            })
+        }
+    }
+)
 
 
 module.exports = router;
