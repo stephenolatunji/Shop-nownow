@@ -311,6 +311,7 @@ router.route('/push-notification/:userId').get(
           }  
 
         });
+        res.send('cool');
     }
 )
 
