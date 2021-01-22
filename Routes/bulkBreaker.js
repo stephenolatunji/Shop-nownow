@@ -9,8 +9,9 @@ const randomString = require('randomstring');
 const BulkBreaker = require('../Models/BulkBreaker');
 const Bdr = require('../Models/BDR');
 const Order = require('../Models/Order');
-const Subscription = require('../Models/Order');
-
+const Subscription = require('../Models/Subscription');
+const webpush = require('web-push');
+webpush.setVapidDetails('mailto:info@ibshopnow.com', process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
 router.route('/').get(async (req, res) => {
     try{
         const bulkBreaker = await BulkBreaker.find()
@@ -285,10 +286,10 @@ router.route('/mydream/delete/:_id').patch(
     }
 )
 
-router.route('/push-notification/:userId').get(
+router.route('/push-notification').post(
     async(req, res)=> {
          // push notification
-        await Subscription.find({ID: req.params.userId}).then(data => {
+        await Subscription.find({ID: req.body.userId}).then(data => {
           
           if(data.length > 0) {
             const subscription = { 
@@ -302,7 +303,7 @@ router.route('/push-notification/:userId').get(
   
             const payload = JSON.stringify({
               title: 'IBShopNow',
-              body: `Hello! I am working.`,
+              body: req.body.message,
             });
 
             webpush.sendNotification(subscription, payload)
@@ -310,8 +311,8 @@ router.route('/push-notification/:userId').get(
               .catch(e => console.log(e.stack));
           }  
 
+          return res.send("Sent");
         });
-        res.send('cool');
     }
 )
 
