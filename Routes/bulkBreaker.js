@@ -8,6 +8,8 @@ const randomString = require('randomstring');
 
 const BulkBreaker = require('../Models/BulkBreaker');
 const Bdr = require('../Models/BDR');
+const Order = require('../Models/Order');
+const Subscription = require('../Models/Order');
 
 router.route('/').get(async (req, res) => {
     try{
@@ -58,6 +60,13 @@ router.route('/login').post(async (req, res) => {
             })
         }
         else {
+            if(bulkBreaker.lastLogin == null){
+                await BulkBreaker.updateOne(
+                    {ID: ID},
+                    {$set: {lastLogin: Date.now()}
+                }
+                    )
+            }
             res.json({
                 success: true,
                 bulkBreaker,
@@ -92,10 +101,11 @@ router.route('/:_id')
         try{
 
             const bulkBreaker = await BulkBreaker.findById({_id: req.params._id}, '-password').lean();
-            res.json(bulkBreaker)
+            const orders = await Order.find({buyerID: bulkBreaker.ID})
+            res.json({bulkBreaker, orders})
         }
         catch(err){
-            res.status(500).send('Sever Error')
+            res.status(500).send('Server Error')
         }
     });
 
@@ -272,6 +282,35 @@ router.route('/mydream/delete/:_id').patch(
                 msg: 'Dream not cleared'
             })
         }
+    }
+)
+
+router.route('/push-notification/:userId').get(
+    async(req, res)=> {
+         // push notification
+        await Subscription.find({ID: req.params.userId}).then(data => {
+          
+          if(data.length > 0) {
+            const subscription = { 
+              "endpoint": data[0].endpoint,
+              "expirationTime": null,
+              "keys": {
+                "p256dh": data[0].p256dh,
+                "auth": data[0].auth
+              }
+            }; 
+  
+            const payload = JSON.stringify({
+              title: 'IBShopNow',
+              body: `Hello! I am working.`,
+            });
+
+            webpush.sendNotification(subscription, payload)
+              .then(result => console.log(result))
+              .catch(e => console.log(e.stack));
+          }  
+
+        });
     }
 )
 
