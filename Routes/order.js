@@ -342,6 +342,17 @@ router.route('/delivered/:userId').get(async (req, res) => {
 //     }
 //   });
 
+
+//fetch orders with higher purchase
+router.route('/fetchall/large').get(async(req, res)=>{
+  try{
+   const orders = await Order.find({status: "completed", totalAmount: {$gt: 100000}}).lean();
+   res.json({success: true, orders})
+  }catch(err){
+    res.status(500).json({msg: err, success: false})
+  }
+})
+
   
 function sendSms(message, mobile) {
   request(`${process.env.messageApi}messagetext=${message}&flash=0&recipients=234${mobile.slice(1)}`, { json: true }, (err, res, body) => {

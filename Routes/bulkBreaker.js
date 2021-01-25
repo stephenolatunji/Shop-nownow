@@ -61,10 +61,10 @@ router.route('/login').post(async (req, res) => {
             })
         }
         else {
-            if(bulkBreaker.lastLogin == null){
+            if(bulkBreaker.lastLogin == null || bulkBreaker.updatedAt == null){
                 await BulkBreaker.updateOne(
                     {ID: ID},
-                    {$set: {lastLogin: Date.now()}
+                    {$set: {lastLogin: Date.now(), updatedAt: Date.now()}
                 }
                     )
             }

@@ -58,7 +58,8 @@ const bulkBreakerSchema = new Schema({
   },
   points: {type: Number, default: 0},
   bdr: { type: String },
-  lastLogin: {type: Date}
+  lastLogin: {type: Date},
+  updatedAt: {type: Date}
 });
 
 bulkBreakerSchema.plugin(mongooseAutoPopulate);
