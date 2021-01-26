@@ -50,8 +50,9 @@ const distributorSchema = new Schema({
     rater: { type: Number, default: 0 },
     rating: { type: Number, default: 0 },
     star: { type: String }
-  }
-
+  },
+  lastLogin: {type: Date},
+  updatedAt: {type: Date}
 });
 
 distributorSchema.plugin(mongooseAutoPopulate);

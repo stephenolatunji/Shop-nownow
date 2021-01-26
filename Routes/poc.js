@@ -79,6 +79,13 @@ router.route('/login')
                     })
                 }
                 else {
+                    if(poc.lastLogin == null || poc.updatedAt == null){
+                        await Poc.updateOne(
+                        {ID: ID},
+                    {$set: {lastLogin: Date.now(), updatedAt: Date.now()}
+                }
+                    )
+            }
                     res.json({
                         success: true,
                         poc,

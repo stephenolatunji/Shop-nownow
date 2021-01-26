@@ -49,7 +49,9 @@ const pocSchema = new Schema({
     rating: { type: Number, default: 0 },
     star: { type: String },
   },
-  bdr: { type: String }
+  bdr: { type: String },
+  lastLogin: {type: Date},
+  updatedAt: {type: Date}
 
 });
 pocSchema.plugin(mongooseAutoPopulate);

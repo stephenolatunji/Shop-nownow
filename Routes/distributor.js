@@ -118,6 +118,13 @@ router.route('/login')
                 }
 
                 else {
+                    if(distributor.lastLogin == null || distributor.updatedAt == null){
+                        await Distributor.updateOne(
+                        {ID: ID},
+                    {$set: {lastLogin: Date.now(), updatedAt: Date.now()}
+                }
+                    )
+            }
                     res.json({
                         success: true,
                         distributor,
