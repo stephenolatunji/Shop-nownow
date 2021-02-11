@@ -28,7 +28,7 @@ router.route('/')
     .get(async (req, res) => {
         try{
 
-            const product = await Product.find();
+            const product = await Product.find({recommendedPrice: {$ne: null}});
             res.json(product);
         }
         catch(err){
