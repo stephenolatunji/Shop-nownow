@@ -27,6 +27,18 @@ const pocSchema = new Schema({
       soldOut: {type: Boolean, default: false}
     },
   ],
+   softdrinks: [
+    {
+      brand: { type: String },
+      sku: { type: String },
+      volume: { type: String },
+      image: { type: String },
+      price: { 
+        poc: { type: Number }
+      },
+      soldOut: {type: Boolean, default: false}
+    },
+  ],
   payment: {
     cash: { type: Boolean, default: false },
     pos: { type: Boolean, default: false },
