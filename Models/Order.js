@@ -42,6 +42,7 @@ const OrderSchema = new Schema(
       type: Number,
       default: 0,
     },
+    softDrinks: {type: Boolean, default: false},
     buyerMobile: { type: String },
     sellerMobile: { type: String },
     requester: { type: String },

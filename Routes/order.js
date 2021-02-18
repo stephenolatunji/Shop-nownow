@@ -17,7 +17,7 @@ webpush.setVapidDetails('mailto:info@ibshopnow.com', process.env.VAPID_PUBLIC_KE
 
 router.route("/")
   .post(async (req, res) => {
-    const { userType, products, requesterID, sellerMobile, buyerMobile, seller, buyer, sellerID, buyerID, requester } = req.body;
+    const { userType, products, requesterID, sellerMobile, buyerMobile, seller, buyer, sellerID, buyerID, requester, softDrinks } = req.body;
 
     try {
       const productOwners = new Set(products.map((product) => product.userID));
@@ -73,6 +73,7 @@ router.route("/")
             ownerId: productOwner,
             ownerType: productOwnersProds[0].ownerType,
             totalAmount: total,
+            softDrinks,
             sellerMobile,
             buyerMobile,
             buyerID,
