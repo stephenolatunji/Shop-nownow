@@ -140,7 +140,7 @@ router.route('/outlets/:email')
 
         try{
             const pocs = await Poc.find({bdr: email}, 'name ID longitude latitude address phone whatsapp').lean();
-            const bulkbreaker = await BulkBreaker.find({bdr: email}, 'name ID longitude latitude address phone whatsapp').lean();
+            const bulkbreaker = await BulkBreaker.find({bdr: email}, 'name ID longitude latitude address phone whatsapp depot').lean();
             res.json({
                 success: true,
                 pocs,
