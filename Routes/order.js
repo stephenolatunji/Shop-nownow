@@ -90,7 +90,7 @@ router.route("/")
           
           await order.save();
 
-          // get data for sending push notification adn perform push notificationW
+          // get data for sending push notification adn perform push notification
           await Subscription.find({ID: sellerID}).then(data => {
           
           if(data.length > 0) {

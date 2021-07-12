@@ -61,6 +61,7 @@ const bulkBreakerSchema = new Schema({
     rating: { type: Number, default: 0 },
     star: { type: String }
   },
+  depot: {type: String},
   dms: {type: Number},
   mydream: {
    name:{ type: String},
