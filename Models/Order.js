@@ -51,6 +51,11 @@ const OrderSchema = new Schema(
       default: "new",
       required: true,
     },
+    truckee: {
+      delivery: {type: Boolean, default: false},
+      driver: {type: Strings},
+
+    },
     reason: { type: String },
     cicAgent: { type: String },
     cicStatus: { type: String },

@@ -17,7 +17,7 @@ webpush.setVapidDetails('mailto:info@ibshopnow.com', process.env.VAPID_PUBLIC_KE
 
 router.route("/")
   .post(async (req, res) => {
-    const { userType, products, requesterID, sellerMobile, buyerMobile, seller, buyer, sellerID, buyerID, requester, softDrinks } = req.body;
+    const { userType, products, requesterID, sellerMobile, buyerMobile, seller, buyer, sellerID, buyerID, requester, softDrinks, truckee } = req.body;
 
     try {
       const productOwners = new Set(products.map((product) => product.userID));
@@ -77,7 +77,10 @@ router.route("/")
             sellerMobile,
             buyerMobile,
             buyerID,
-            requester
+            requester,
+            truckee:{
+              delivery: truckee
+            }
             
           });
           

@@ -3,7 +3,6 @@ const router = express.Router();
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const randomize = require('randomatic');
-
 const Bdr = require('../Models/BDR');
 const Poc = require('../Models/Pocs');
 const request  = require('request');
@@ -186,15 +185,15 @@ router.route('/otp')
                 const orders = await Order.find({'pocId':{ $ne: null}})
                 .populate('pocId', 'bdr name phone')
                 .populate('items')
-                .lean().then(data=>{  
-                    const result = data.filter(element=>element.pocId.bdr == email);
-
-                    res.status(200).json({
-                        success: true,
-                        result
-                    })
+                .lean()
+                .then(data=>{const result = data.filter(element=>element.pocId.bdr == email);
+                    console.log(result);
+                    
                 })
-    
+                res.status(200).json({
+                    success: true,
+                    result
+                })
             }
             catch(err){
                 res.status(500).json({
