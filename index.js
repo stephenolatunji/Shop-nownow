@@ -31,7 +31,7 @@ const shopperRoute = require('./Routes/shopper');
 const shopperOrder = require('./Routes/shopperOrder');
 const bdrRoute = require('./Routes/bdr');
 const genericRoute = require('./Routes/generic');
-
+const truckeeRoute = require('./Routes/truckee');
 app.get('/', (req, res) => {
     res.status(200).send('Welcome to IBShopNow')
 });
@@ -45,6 +45,7 @@ app.use('/shopper', shopperRoute);
 app.use('/shopperorder', shopperOrder);
 app.use('/bdr', bdrRoute);
 app.use('/generic', genericRoute);
+app.use('/truckee', truckeeRoute);
 
 const port = process.env.PORT || 9999
 
