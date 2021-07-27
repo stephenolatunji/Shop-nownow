@@ -53,7 +53,7 @@ const OrderSchema = new Schema(
     },
     truckee: {
       delivery: {type: Boolean, default: false},
-      driver: {type: Strings},
+      driver: {type: String},
 
     },
     reason: { type: String },

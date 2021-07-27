@@ -43,7 +43,7 @@ router.route('/deliveries/:email')
 router.route('/delivery/:id')
     
 //Driver accepts an order and changes the status to dispatched
-    .patch(async(req, req)=>{
+    .patch(async(req, res)=>{
         const email = req.body.status;
         try{
             let order;
@@ -65,7 +65,7 @@ router.route('/delivery/:id')
     });
 
 router.route('/:id')
-    .patch(async(req, req)=>{
+    .patch(async(req, res)=>{
         try{
             let order;
             order = await Order.updateOne(
