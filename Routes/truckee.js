@@ -7,8 +7,13 @@ const Order = require('../Models/Order');
 router.route('/deliveries')
     .get(async (req, res)=>{
         try{
-            const orders = await Order.find({'truckee.delivery': true}).lean();
-            res.status().json({success: true, orders})
+            const orders = await Order.find({'truckee.delivery': true})
+            .populate('bulkbreakerId', 'address latitude longitude ')
+            .populate('pocId', 'address latitude longitude ')
+            .populate('items', 'quantity details.brand details.sku details.volume')
+            .lean();
+            
+            res.status(200).json({success: true, orders});
         }
         catch{
             res.status(500).json({success: false, msg: 'Server Error' });
@@ -44,7 +49,7 @@ router.route('/delivery/:id')
     
 //Driver accepts an order and changes the status to dispatched
     .patch(async(req, res)=>{
-        const email = req.body.status;
+        const email = req.body.email;
         try{
             let order;
             order = await Order.updateOne(
@@ -58,6 +63,15 @@ router.route('/delivery/:id')
             );
             order = await Order.findById({_id: req.params.id}).lean();
             res.status(200).json({success: true, order});
+        }
+        catch{
+            res.status(500).json({success: false, msg: 'Server Error' });
+        }
+    })
+    .get(async(req, res)=>{
+        try{
+            const orders = await Order.find({_id: req.params.id}).lean();
+            res.status(200).json({success: false, orders});
         }
         catch{
             res.status(500).json({success: false, msg: 'Server Error' });
