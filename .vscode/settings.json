@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/1897ed80-b379-4a14-9d08-e356b05b9bf1/resourceGroups/IBShopNow/providers/Microsoft.Web/sites/shopnow",
+    "appService.deploySubpath": "."
+}
