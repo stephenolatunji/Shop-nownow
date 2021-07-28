@@ -24,7 +24,11 @@ router.route('/deliveries')
 router.route('/new/deliveries')
     .get(async(req, res)=>{
         try{
-            const orders = await Order.find({status: 'confirmed', 'truckee.delivery': true}).lean();
+            const orders = await Order.find({status: 'confirmed', 'truckee.delivery': true})
+            .populate('bulkbreakerId', 'address latitude longitude ')
+            .populate('pocId', 'address latitude longitude ')
+            .populate('items', 'quantity details.brand details.sku details.volume')
+            .lean();
             res.status(200).json({success: false, orders});
         }
         catch{
@@ -37,7 +41,11 @@ router.route('/new/deliveries')
 router.route('/deliveries/:email')
     .get(async(req, res)=>{
         try{
-            const order =  await Order.find({'truckee.driver': req.params.email}).lean();
+            const order =  await Order.find({'truckee.driver': req.params.email})
+            .populate('bulkbreakerId', 'address latitude longitude ')
+            .populate('pocId', 'address latitude longitude ')
+            .populate('items', 'quantity details.brand details.sku details.volume')
+            .lean();
             res.status(200).json({success: true, order});
         }
         catch{
@@ -62,16 +70,26 @@ router.route('/delivery/:id')
                     status: 'dispatched'
                 }}
             );
-            order = await Order.findById({_id: req.params.id}).lean();
+            order = await Order.findById({_id: req.params.id})
+            .populate('bulkbreakerId', 'address latitude longitude ')
+            .populate('pocId', 'address latitude longitude ')
+            .populate('items', 'quantity details.brand details.sku details.volume')
+            .lean();
             res.status(200).json({success: true, order});
         }
         catch{
             res.status(500).json({success: false, msg: 'Server Error' });
         }
     })
+
+//Get order by ID
     .get(async(req, res)=>{
         try{
-            const orders = await Order.find({_id: req.params.id}).lean();
+            const orders = await Order.findById({_id: req.params.id})
+            .populate('bulkbreakerId', 'address latitude longitude ')
+            .populate('pocId', 'address latitude longitude ')
+            .populate('items', 'quantity details.brand details.sku details.volume')
+            .lean();
             res.status(200).json({success: false, orders});
         }
         catch{
@@ -87,7 +105,12 @@ router.route('/:id')
                 {_id: req.params.id},
                 {$set: {status: 'delivered'}}
             );
-            order = await Order.findById({_id: req.params.id}).lean();
+            order = await Order.findById({_id: req.params.id})
+            .populate('bulkbreakerId', 'address latitude longitude ')
+            .populate('pocId', 'address latitude longitude ')
+            .populate('items', 'quantity details.brand details.sku details.volume')
+            .lean();
+            
             res.status(200).json({success: true, order});
         }
         catch{
