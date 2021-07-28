@@ -56,6 +56,7 @@ router.route('/delivery/:id')
                 {_id: req.params.id},
                 {$set: {
                     truckee: {
+                        delivery: true,
                         driver: email
                     },
                     status: 'dispatched'
