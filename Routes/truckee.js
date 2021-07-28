@@ -29,7 +29,7 @@ router.route('/new/deliveries')
             .populate('pocId', 'address latitude longitude ')
             .populate('items', 'quantity details.brand details.sku details.volume')
             .lean();
-            res.status(200).json({success: false, orders});
+            res.status(200).json({success: true, orders});
         }
         catch{
             res.status(500).json({success: false, msg: 'Server Error' });
