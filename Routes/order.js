@@ -17,7 +17,7 @@ webpush.setVapidDetails('mailto:info@ibshopnow.com', process.env.VAPID_PUBLIC_KE
 
 router.route("/")
   .post(async (req, res) => {
-    const { userType, products, requesterID, sellerMobile, buyerMobile, seller, buyer, sellerID, buyerID, requester, softDrinks, truckee } = req.body;
+    // const { userType, products, requesterID, sellerMobile, buyerMobile, seller, buyer, sellerID, buyerID, requester, softDrinks, truckee } = req.body;
 
     try {
       const productOwners = new Set(products.map((product) => product.userID));
@@ -129,7 +129,7 @@ router.route("/")
 
   .get(async (req, res) => {
     try {
-      const { userType, ID } = req.query;
+      // const { userType, ID } = req.query;
       const orders = await Order.find({
         [`${userType}Id`]: mongoose.Types.ObjectId(ID),
       })
@@ -195,7 +195,7 @@ router.route("/:userID").get(async (req, res) => {
 
 router.route("/:_id")
   .patch(async (req, res) => {
-    const {status, reason} = req.body;
+    // const {status, reason} = req.body;
     try {
       const order = await Order.updateOne(
         { _id: req.params._id },
@@ -288,7 +288,7 @@ router.route("/:_id")
 router.route('/one/:_id')
   .get(async (req, res) => {
     try {
-      const order = await Order.findById({ _id: req.params._id }).lean();
+      // const order = await Order.findById({ _id: req.params._id }).lean();
 
       res.json({
         success: true,
@@ -304,7 +304,7 @@ router.route('/one/:_id')
 });
 
 router.route('/delivered/:userId').get(async (req, res) => {
-  const userId = req.params.userId;
+  // const userId = req.params.userId;
   try{
     const deliveredOrders = await Order.countDocuments({
       ownerId: userId,
