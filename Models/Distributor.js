@@ -20,6 +20,7 @@ const distributorSchema = new Schema({
       sku: { type: String },
       volume: { type: String },
       image: { type: String },
+      combo: {type: Boolean},
       price: { 
         bb: { type: Number },
         poc: { type: Number }
