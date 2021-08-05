@@ -5,6 +5,7 @@ const productSchema = new Schema({
     brand: {type: String},
     sku: {type: String},
     volume: {type: String},
+    combo: {type: Boolean},
     recommendedPrice: {
         bb: { type: String },
         poc: { type: String },
