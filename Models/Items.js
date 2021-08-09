@@ -8,6 +8,7 @@ const itemSchema = new Schema(
       sku: { type: String },
       volume: { type: String },
       image: { type: String },
+      combo: {type: String},
       price: { type: Number },
       userID: { type: String },
       ownerType: { type: String },

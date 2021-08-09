@@ -271,7 +271,9 @@ router.route("/:_id")
 
   .get(async(req, res) => {
     try{
-      const order = await Order.findById({_id: req.params._id}).lean();
+      const order = await Order.findById({_id: req.params._id})
+      .populate('items')
+      .lean();
       res.status(200).json({
         success: true,
         order
@@ -288,7 +290,9 @@ router.route("/:_id")
 router.route('/one/:_id')
   .get(async (req, res) => {
     try {
-      const order = await Order.findById({ _id: req.params._id }).lean();
+      const order = await Order.findById({ _id: req.params._id })
+      .populate('items')
+      .lean();
 
       res.json({
         success: true,
