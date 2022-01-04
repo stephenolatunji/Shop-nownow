@@ -180,19 +180,21 @@ router.route('/otp')
     router.route('/order/new/:email')
         .get(async(req, res) => {
             const email = req.params.email;
-
+            var result = [];
             try{
                 const orders = await Order.find({'pocId':{ $ne: null}})
                 .populate('pocId', 'bdr name phone')
                 .populate('items')
                 .lean()
-                .then(data=>{const result = data.filter(element=>element.pocId.bdr == email);
-                    console.log(result);
+                // .then(data=>{const result = data.filter(element=>element.pocId.bdr == email);
+                //     console.log(result);
                     
-                })
+                // })
+            const xy = result.push(orders.forEach(element => element.pocId.bdr == 'fidelis.iheme@ng.ab-inbev.com'))
+               console.log(xy)
                 res.status(200).json({
                     success: true,
-                    result
+                    xy
                 })
             }
             catch(err){

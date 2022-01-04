@@ -316,5 +316,16 @@ router.route('/push-notification').post(
     }
 )
 
+router.route('/delete/col')
+    .get(async(req, res) =>{
+        try{
+            const deleted = await BulkBreaker.deleteMany({code: {$ne: null}, depot: null}).lean();
+            res.json({success: true, deleted});
+        }
+        catch(err){
+            res.send(err)
+        }
+    })
+
 
 module.exports = router;

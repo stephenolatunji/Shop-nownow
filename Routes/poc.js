@@ -278,4 +278,20 @@ router.route('/rateme/:_id')
     });
 
 
+
+
+
+
+
+    router.route('/old/delete')
+    .get(async(req, res)=>{
+        try{
+            const poc = await Poc.deleteMany({DB: {$ne: null}, activated: null});
+            res.status(200).json({poc, success: true});
+        }
+        catch(err){
+            res.status(500).json({success: false, err})
+        }
+    });
+
 module.exports = router;

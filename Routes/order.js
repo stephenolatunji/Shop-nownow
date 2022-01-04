@@ -164,7 +164,7 @@ router.route("/")
 router.route("/:userID").get(async (req, res) => {
   try {
     const { userID } = req.params;
-    const orders = await Order.find({ ownerId: userID }).populate("items").lean();
+    const orders = await Order.find({ ownerId: userID, status: {$ne: "completed"} }).populate("items").lean();
     const userOrders = [];
     for await (const order of orders) {
       let user;
